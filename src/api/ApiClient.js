@@ -269,6 +269,42 @@ class ClientApi extends BaseApi {
 
         return Array.isArray(onlineClientsJson) ? onlineClientsJson : [];
     }
+    /**
+     * Retrieves traffic information for a specific client by their ID.
+     * This endpoint provides traffic statistics and other relevant information
+     * related to the client identified by their unique ID.
+     * 
+     * @param {string} clientId - The ID of the client to retrieve traffic for
+     * @returns {Promise<Array<Client>>} An array of Client objects if found, otherwise empty array
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * const clients = await api.client.getTrafficById("client-id-123");
+     */
+    async getTrafficById(clientId) {
+        const endpoint = `panel/api/inbounds/getClientTrafficsById/${clientId}`;
+        const headers = { "Accept": "application/json" };
+
+        const url = this._url(endpoint);
+        this.logger.log(`Getting traffic for client ID: ${clientId}`);
+
+        const response = await this._get(url, headers);
+        const clientJson = response.data[ApiFields.OBJ];
+
+        if (!clientJson) {
+            this.logger.log(`No client found for ID: ${clientId}`);
+            return [];
+        }
+
+        // Convert JSON array to Client objects
+        if (Array.isArray(clientJson)) {
+            return clientJson.map(client => Client.fromJSON(client));
+        }
+        
+        // If it's a single object, return it as an array
+        return [Client.fromJSON(clientJson)];
+    }
 }
 
 export default ClientApi;
