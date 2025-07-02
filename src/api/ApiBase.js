@@ -58,18 +58,15 @@ class BaseApi {
      * @param {string} url - Full URL to make the request to
      * @param {Object} [headers={}] - HTTP headers to include
      * @param {Object} [options={}] - Additional request options
-     * @param {boolean} [options.skipCheck=false] - Skip response validation
-     * @param {Object} [options.cookies] - Cookies to include in request
      * @returns {Promise<Object>} Promise resolving to axios response object
      * @throws {Error} Throws error if request fails after all retries
      */
     async _requestWithRetry(method, url, headers = {}, options = {}) {
-        const axios = await import('axios');
         this.logger.log(`${method.toUpperCase()} request to ${url}...`);
         
         for (let retry = 1; retry <= this._maxRetries; retry++) {
             try {
-                const { skipCheck = false, cookies, ...requestOptions } = options;
+                const { skipCheck = false, ...requestOptions } = options;
                 
                 const axiosConfig = {
                     method: method.toLowerCase(),
