@@ -4,11 +4,6 @@ import { CookieJar } from 'tough-cookie';
 import ApiFields from './ApiFields.js';
 
 /**
- * Common cookie names used by XUI API for session management.
- */
-const COOKIE_NAMES = ["3x-ui", "session"];
-
-/**
  * Base class for the XUI API. Contains common methods for making requests.
  */
 class BaseApi {
@@ -21,6 +16,8 @@ class BaseApi {
      * @param {boolean} [useTlsVerify=true] - Whether to verify TLS certificates
      * @param {string|null} [customCertificatePath=null] - Path to custom certificate
      * @param {*} [logger=null] - Optional logger instance
+     * @param {CookieJar} [sharedCookieJar=null] - Optional shared cookie jar
+     * @param {*} [sharedAxiosInstance=null] - Optional shared axios instance
      */
     constructor(
         host,
@@ -29,7 +26,9 @@ class BaseApi {
         token = null,
         useTlsVerify = true,
         customCertificatePath = null,
-        logger = null
+        logger = null,
+        sharedCookieJar = null,
+        sharedAxiosInstance = null
     ) {
         this._host = host.replace(/\/$/, ''); // Remove trailing slash
         this._username = username;
@@ -38,50 +37,21 @@ class BaseApi {
         this._useTlsVerify = useTlsVerify;
         this._customCertificatePath = customCertificatePath;
         this._maxRetries = 3;
-        this._session = null;
-        this._cookieName = null;
         this.logger = logger || console; // Default to console if no logger provided
         
-        // Initialize cookie jar for better cookie handling
-        this.cookieJar = new CookieJar();
-        this.axiosInstance = wrapper(axios.create({
-            jar: this.cookieJar,
-            withCredentials: true
-        }));
+        // Use shared instances if provided, otherwise create new ones
+        if (sharedCookieJar && sharedAxiosInstance) {
+            this.cookieJar = sharedCookieJar;
+            this.axiosInstance = sharedAxiosInstance;
+        } else {
+            // Initialize cookie jar for better cookie handling
+            this.cookieJar = new CookieJar();
+            this.axiosInstance = wrapper(axios.create({
+                jar: this.cookieJar,
+                withCredentials: true
+            }));
+        }
     }
-
-    /**
-     * Gets the current session cookie value.
-     * @returns {string|null} The session cookie value or null if not logged in
-     */
-    get session() {
-        return this._session;
-    }
-
-    /**
-     * Sets the session cookie value.
-     * @param {string|null} value - The session cookie value to set
-     */
-    set session(value) {
-        this._session = value;
-    }
-
-    /**
-     * Gets the current cookie name being used for session management.
-     * @returns {string|null} The cookie name or null if not set
-     */
-    get cookieName() {
-        return this._cookieName;
-    }
-
-    /**
-     * Sets the cookie name for session management.
-     * @param {string|null} value - The cookie name to use
-     */
-    set cookieName(value) {
-        this._cookieName = value;
-    }
-
     /**
      * Makes HTTP requests with automatic retry logic and error handling.
      * @param {string} method - HTTP method (GET, POST, etc.)
@@ -230,16 +200,9 @@ class BaseApi {
      * @throws {Error} Throws error if not logged in (unless isLogin=true) or if request fails
      */
     async _get(url, headers = {}, options = {}) {
-        const { isLogin = false, ...otherOptions } = options;
-        
-        if (!isLogin && !this._session) {
-            throw new Error("Before making a GET request, you must use the login() method.");
-        }
-        
+        const { isLogin = false, ...otherOptions } = options;    
         return this._requestWithRetry('get', url, headers, { 
-            ...otherOptions,
-            // Pass cookies like Python requests does
-            cookies: this.cookies 
+            ...otherOptions
         });
     }
 
@@ -288,18 +251,22 @@ class BaseApi {
      * @private
      */
     _getCookie(response) {
-        for (const cookieName of COOKIE_NAMES) {
-            const setCookieHeader = response.headers['set-cookie'];
-            if (!setCookieHeader) continue;
-            
-            for (const cookie of setCookieHeader) {
-                if (cookie.startsWith(`${cookieName}=`)) {
-                    this.logger.log(`Session cookie found: ${cookieName}`);
-                    this._cookieName = cookieName;
-                    return cookie.split(';')[0].split('=')[1]; // Extract just the value
-                }
-            }
+        const setCookieHeader = response.headers['set-cookie'];
+        if (!setCookieHeader || setCookieHeader.length === 0) {
+            return null;
         }
+        
+        // Just take the first cookie - the cookie jar handles all of them automatically
+        const firstCookie = setCookieHeader[0];
+        const cookieParts = firstCookie.split(';')[0].split('=');
+        
+        if (cookieParts.length >= 2) {
+            this._cookieName = cookieParts[0];
+            const cookieValue = cookieParts[1];
+            this.logger.log(`Session cookie found: ${this._cookieName}`);
+            return cookieValue;
+        }
+        
         return null;
     }
 }

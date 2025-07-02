@@ -1,4 +1,8 @@
 import InboundApi from './api/ApiInbound.js';
+import ClientApi from './api/ApiClient.js';
+import { wrapper } from 'axios-cookiejar-support';
+import { CookieJar } from 'tough-cookie';
+import axios from 'axios';
 
 /**
  * This class provides a high-level interface to interact with the XUI API.
@@ -24,38 +28,23 @@ class Api {
         customCertificatePath = null,
         logger = null
     ) {
-        this.inbound = new InboundApi(
-            host, username, password, token, useTlsVerify, customCertificatePath, logger
+        // Create shared cookie jar and axios instance
+        this.cookieJar = new CookieJar();
+        this.axiosInstance = wrapper(axios.create({
+            jar: this.cookieJar,
+            withCredentials: true
+        }));
+        
+        // Create API instances and pass the shared cookie jar and axios instance
+        this.client = new ClientApi(
+            host, username, password, token, useTlsVerify, customCertificatePath, logger,
+            this.cookieJar, this.axiosInstance
         );
-        this._session = null;
-        this._cookieName = null;
+        this.inbound = new InboundApi(
+            host, username, password, token, useTlsVerify, customCertificatePath, logger,
+            this.cookieJar, this.axiosInstance
+        );
     }
-    /**
-     * Returns the current session cookie value.
-     * @returns {string|null} The session cookie value or null if not logged in
-     */
-    get session() {
-        return this._session;
-    }
-
-    set session(value) {
-        this._session = value;
-        this.inbound.session = value;
-    }
-
-    /**
-     * Returns the current cookie name.
-     * @returns {string|null} The cookie name or null if not set
-     */
-    get cookieName() {
-        return this._cookieName;
-    }
-
-    set cookieName(value) {
-        this._cookieName = value;
-        this.inbound.cookieName = value;
-    }
-
     /**
      * Logs in to the XUI API and establishes a session.
      * @param {string|null} [twoFactorCode=null] - Optional two-factor authentication code
@@ -63,8 +52,6 @@ class Api {
      */
     async login(twoFactorCode = null) {
         await this.inbound.login(twoFactorCode);
-        this.session = this.inbound.session;
-        this.cookieName = this.inbound.cookieName;
     }
 }
 

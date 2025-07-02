@@ -1,5 +1,6 @@
 import BaseApi from './ApiBase.js';
 import ApiFields from './ApiFields.js';
+import Inbound from '../inbound/Inbound.js';
 
 /**
  * API class for managing inbound connections.
@@ -10,7 +11,7 @@ class InboundApi extends BaseApi {
      * Retrieves a comprehensive list of all inbounds along with their associated
      * client options and statistics.
      * 
-     * @returns {Promise<Array>} A list of inbound objects
+     * @returns {Promise<Array<Inbound>]} A list of Inbound objects
      * 
      * @example
      * const api = new Api('host', 'user', 'pass');
@@ -26,7 +27,13 @@ class InboundApi extends BaseApi {
         
         const response = await this._get(url, headers);
         const inboundsJson = response.data[ApiFields.OBJ];
-        return inboundsJson || [];
+        
+        if (!inboundsJson || !Array.isArray(inboundsJson)) {
+            return [];
+        }
+        
+        // Convert JSON objects to Inbound instances
+        return inboundsJson.map(inboundData => Inbound.fromJSON(inboundData));
     }
 }
 

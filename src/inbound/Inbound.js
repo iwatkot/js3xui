@@ -1,0 +1,135 @@
+/**
+ * Represents an inbound connection in the XUI API.
+ */
+class Inbound {
+    /**
+     * Creates a new Inbound instance.
+     * @param {Object} data - The inbound data
+     * @param {boolean} data.enable - Whether the inbound connection is enabled. Required.
+     * @param {number} data.port - The port number for the inbound connection. Required.
+     * @param {string} data.protocol - The protocol for the inbound connection. Required.
+     * @param {Object} data.settings - The settings for the inbound connection. Required.
+     * @param {Object|string} [data.streamSettings=""] - The stream settings for the inbound connection. Optional.
+     * @param {Object} data.sniffing - The sniffing settings for the inbound connection. Required.
+     * @param {string} [data.listen=""] - The listen address for the inbound connection. Optional.
+     * @param {string} [data.remark=""] - The remark for the inbound connection. Optional.
+     * @param {number} [data.id=0] - The ID of the inbound connection. Optional.
+     * @param {number} [data.up=0] - The up value for the inbound connection. Optional.
+     * @param {number} [data.down=0] - The down value for the inbound connection. Optional.
+     * @param {number} [data.total=0] - The total value for the inbound connection. Optional.
+     * @param {number} [data.expiryTime=0] - The expiry time for the inbound connection. Optional.
+     * @param {Array} [data.clientStats=[]] - The client stats for the inbound connection. Optional.
+     * @param {string} [data.tag=""] - The tag for the inbound connection. Optional.
+     */
+    constructor(data = {}) {
+        // Required fields
+        this.enable = data.enable;
+        this.port = data.port;
+        this.protocol = data.protocol;
+        this.settings = data.settings;
+        this.sniffing = data.sniffing;
+
+        // Optional fields with defaults
+        this.streamSettings = data.streamSettings || "";
+        this.listen = data.listen || "";
+        this.remark = data.remark || "";
+        this.id = data.id || 0;
+        this.up = data.up || 0;
+        this.down = data.down || 0;
+        this.total = data.total || 0;
+        this.expiryTime = data.expiryTime || 0;
+        this.clientStats = data.clientStats || [];
+        this.tag = data.tag || "";
+    }
+
+    /**
+     * Creates an Inbound instance from JSON data (from API response).
+     * Handles field name mapping from API format.
+     * @param {Object} json - The JSON data from API
+     * @returns {Inbound} A new Inbound instance
+     */
+    static fromJSON(json) {
+        return new Inbound({
+            enable: json.enable,
+            port: json.port,
+            protocol: json.protocol,
+            settings: json.settings,
+            streamSettings: json.streamSettings,
+            sniffing: json.sniffing,
+            listen: json.listen,
+            remark: json.remark,
+            id: json.id,
+            up: json.up,
+            down: json.down,
+            total: json.total,
+            expiryTime: json.expiryTime,
+            clientStats: json.clientStats,
+            tag: json.tag
+        });
+    }
+
+    /**
+     * Converts the Inbound instance to JSON format for API requests.
+     * Only includes fields needed for API operations.
+     * @returns {Object} JSON representation for API
+     */
+    toJSON() {
+        const json = {
+            enable: this.enable,
+            port: this.port,
+            protocol: this.protocol,
+            remark: this.remark,
+            listen: this.listen,
+            expiryTime: this.expiryTime
+        };
+
+        // Handle settings - convert to JSON string if it's an object
+        if (typeof this.settings === 'object') {
+            json.settings = JSON.stringify(this.settings);
+        } else {
+            json.settings = this.settings;
+        }
+
+        // Handle sniffing - convert to JSON string if it's an object
+        if (typeof this.sniffing === 'object') {
+            json.sniffing = JSON.stringify(this.sniffing);
+        } else {
+            json.sniffing = this.sniffing;
+        }
+
+        // Handle streamSettings - can be object, string, or empty string
+        if (typeof this.streamSettings === 'object') {
+            json.streamSettings = JSON.stringify(this.streamSettings);
+        } else {
+            json.streamSettings = this.streamSettings;
+        }
+
+        return json;
+    }
+
+    /**
+     * Returns a complete representation of the inbound (for debugging/display).
+     * @returns {Object} Complete object representation
+     */
+    toObject() {
+        return {
+            enable: this.enable,
+            port: this.port,
+            protocol: this.protocol,
+            settings: this.settings,
+            streamSettings: this.streamSettings,
+            sniffing: this.sniffing,
+            listen: this.listen,
+            remark: this.remark,
+            id: this.id,
+            up: this.up,
+            down: this.down,
+            total: this.total,
+            expiryTime: this.expiryTime,
+            clientStats: this.clientStats,
+            tag: this.tag
+        };
+    }
+}
+
+export default Inbound;
