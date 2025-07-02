@@ -1,6 +1,7 @@
 import Client from '../client/Client.js';
 import Settings from './Settings.js';
 import Sniffing from './Sniffing.js';
+import StreamSettings from './StreamSettings.js';
 
 /**
  * Represents an inbound connection in the XUI API.
@@ -13,7 +14,7 @@ class Inbound {
      * @param {number} data.port - The port number for the inbound connection. Required.
      * @param {string} data.protocol - The protocol for the inbound connection. Required.
      * @param {Settings} data.settings - The settings for the inbound connection. Required.
-     * @param {Object|string} [data.streamSettings=""] - The stream settings for the inbound connection. Optional.
+     * @param {StreamSettings} [data.streamSettings=""] - The stream settings for the inbound connection. Optional.
      * @param {Sniffing} data.sniffing - The sniffing settings for the inbound connection. Required.
      * @param {string} [data.listen=""] - The listen address for the inbound connection. Optional.
      * @param {string} [data.remark=""] - The remark for the inbound connection. Optional.
@@ -40,10 +41,24 @@ class Inbound {
             this.settings = new Settings();
         }
         
-        this.sniffing = data.sniffing;
+        // Handle sniffing - ensure it's a Sniffing object
+        if (data.sniffing instanceof Sniffing) {
+            this.sniffing = data.sniffing;
+        } else if (data.sniffing && typeof data.sniffing === 'object') {
+            this.sniffing = Sniffing.fromJSON(data.sniffing);
+        } else {
+            this.sniffing = new Sniffing({ enabled: false });
+        }
 
         // Optional fields with defaults
-        this.streamSettings = data.streamSettings || "";
+        // Handle streamSettings - can be StreamSettings object, object, or string
+        if (data.streamSettings instanceof StreamSettings) {
+            this.streamSettings = data.streamSettings;
+        } else if (data.streamSettings && typeof data.streamSettings === 'object') {
+            this.streamSettings = StreamSettings.fromJSON(data.streamSettings);
+        } else {
+            this.streamSettings = data.streamSettings || "";
+        }
         this.listen = data.listen || "";
         this.remark = data.remark || "";
         this.id = data.id || 0;
@@ -91,12 +106,26 @@ class Inbound {
             sniffing = Sniffing.fromJSON(json.sniffing);
         }
 
+        // Convert streamSettings to StreamSettings object if it's an object
+        let streamSettings = json.streamSettings;
+        if (json.streamSettings && typeof json.streamSettings === 'object') {
+            streamSettings = StreamSettings.fromJSON(json.streamSettings);
+        } else if (typeof json.streamSettings === 'string' && json.streamSettings.length > 0) {
+            try {
+                const parsedStreamSettings = JSON.parse(json.streamSettings);
+                streamSettings = StreamSettings.fromJSON(parsedStreamSettings);
+            } catch {
+                // If parsing fails, keep as string
+                streamSettings = json.streamSettings;
+            }
+        }
+
         return new Inbound({
             enable: json.enable,
             port: json.port,
             protocol: json.protocol,
             settings: settings,
-            streamSettings: json.streamSettings,
+            streamSettings: streamSettings,
             sniffing: sniffing,
             listen: json.listen,
             remark: json.remark,
@@ -143,8 +172,10 @@ class Inbound {
             json.sniffing = this.sniffing;
         }
 
-        // Handle streamSettings - can be object, string, or empty string
-        if (typeof this.streamSettings === 'object') {
+        // Handle streamSettings - convert StreamSettings object to JSON string if needed
+        if (this.streamSettings instanceof StreamSettings) {
+            json.streamSettings = JSON.stringify(this.streamSettings.toJSON());
+        } else if (typeof this.streamSettings === 'object') {
             json.streamSettings = JSON.stringify(this.streamSettings);
         } else {
             json.streamSettings = this.streamSettings;
