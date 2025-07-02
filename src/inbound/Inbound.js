@@ -1,4 +1,5 @@
 import Client from '../client/Client.js';
+import Settings from './Settings.js';
 
 /**
  * Represents an inbound connection in the XUI API.
@@ -10,7 +11,7 @@ class Inbound {
      * @param {boolean} data.enable - Whether the inbound connection is enabled. Required.
      * @param {number} data.port - The port number for the inbound connection. Required.
      * @param {string} data.protocol - The protocol for the inbound connection. Required.
-     * @param {Object} data.settings - The settings for the inbound connection. Required.
+     * @param {Settings|Object} data.settings - The settings for the inbound connection. Required.
      * @param {Object|string} [data.streamSettings=""] - The stream settings for the inbound connection. Optional.
      * @param {Object} data.sniffing - The sniffing settings for the inbound connection. Required.
      * @param {string} [data.listen=""] - The listen address for the inbound connection. Optional.
@@ -28,7 +29,16 @@ class Inbound {
         this.enable = data.enable;
         this.port = data.port;
         this.protocol = data.protocol;
-        this.settings = data.settings;
+        
+        // Handle settings - ensure it's a Settings object
+        if (data.settings instanceof Settings) {
+            this.settings = data.settings;
+        } else if (data.settings && typeof data.settings === 'object') {
+            this.settings = Settings.fromJSON(data.settings);
+        } else {
+            this.settings = new Settings();
+        }
+        
         this.sniffing = data.sniffing;
 
         // Optional fields with defaults
@@ -57,11 +67,22 @@ class Inbound {
             clientStats = json.clientStats.map(clientData => Client.fromJSON(clientData));
         }
 
+        // Parse settings if it's a JSON string, otherwise use as-is
+        let settingsData = json.settings;
+        if (typeof json.settings === 'string') {
+            try {
+                settingsData = JSON.parse(json.settings);
+            } catch (e) {
+                console.warn('Failed to parse settings JSON:', json.settings);
+                settingsData = {};
+            }
+        }
+
         return new Inbound({
             enable: json.enable,
             port: json.port,
             protocol: json.protocol,
-            settings: json.settings,
+            settings: settingsData,
             streamSettings: json.streamSettings,
             sniffing: json.sniffing,
             listen: json.listen,
@@ -91,8 +112,10 @@ class Inbound {
             expiryTime: this.expiryTime
         };
 
-        // Handle settings - convert to JSON string if it's an object
-        if (typeof this.settings === 'object') {
+        // Handle settings - convert Settings object to JSON string if needed
+        if (this.settings instanceof Settings) {
+            json.settings = JSON.stringify(this.settings.toJSON());
+        } else if (typeof this.settings === 'object') {
             json.settings = JSON.stringify(this.settings);
         } else {
             json.settings = this.settings;
