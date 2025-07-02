@@ -2,7 +2,7 @@
   "name": "js3xui",
   "version": "1.0.0",
   "type": "module",
-  "description": "Async Object-oriented JS SDK for the 3x-ui API.",
+  "description": "Async Object-oriented JavaScript SDK for the 3x-ui API.",
   "main": "src/Api.js",
   "scripts": {
     "test": "node test.js",
