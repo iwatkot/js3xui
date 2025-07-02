@@ -63,6 +63,41 @@ class ClientApi extends BaseApi {
 
         return Array.isArray(ipsJson) ? ipsJson : [];
     }
+    /**
+     * Adds one or more clients to a specific inbound connection.
+     * This endpoint allows you to associate clients with an inbound connection,
+     * enabling them to access the service through that connection.
+     * 
+     * @param {number} inboundId - The ID of the inbound connection to add clients to
+     * @param {Array<Client>} clients - An array of Client objects to be added
+     * @returns {Promise<void>} Resolves when the clients are successfully added
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * const newClientId = crypto.randomUUID();
+     * const newClient = new Client({ email: "user@example.com", enable: true, id: newClientId });
+     * await api.client.add(1, [newClient]);
+     */
+    async add(inboundId, clients) {
+        const endpoint = "panel/api/inbounds/addClient";
+        const headers = { "Accept": "application/json" };
+
+        const url = this._url(endpoint);
+        
+        const settings = {
+            clients: clients.map(client => client.toJSON())
+        };
+
+        const data = {
+            id: inboundId,
+            settings: JSON.stringify(settings)
+        };
+
+        this.logger.log(`Adding ${clients.length} clients to inbound ${inboundId}`);
+        await this._post(url, headers, data);
+        this.logger.log(`Clients added successfully to inbound ${inboundId}`);
+    }
 }
 
 export default ClientApi;
