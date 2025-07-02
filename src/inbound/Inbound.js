@@ -1,3 +1,5 @@
+import Client from '../client/Client.js';
+
 /**
  * Represents an inbound connection in the XUI API.
  */
@@ -18,7 +20,7 @@ class Inbound {
      * @param {number} [data.down=0] - The down value for the inbound connection. Optional.
      * @param {number} [data.total=0] - The total value for the inbound connection. Optional.
      * @param {number} [data.expiryTime=0] - The expiry time for the inbound connection. Optional.
-     * @param {Array} [data.clientStats=[]] - The client stats for the inbound connection. Optional.
+     * @param {Array<Client>} [data.clientStats=[]] - The client stats for the inbound connection. Optional.
      * @param {string} [data.tag=""] - The tag for the inbound connection. Optional.
      */
     constructor(data = {}) {
@@ -49,6 +51,12 @@ class Inbound {
      * @returns {Inbound} A new Inbound instance
      */
     static fromJSON(json) {
+        // Convert clientStats array to Client objects if it exists
+        let clientStats = [];
+        if (Array.isArray(json.clientStats)) {
+            clientStats = json.clientStats.map(clientData => Client.fromJSON(clientData));
+        }
+
         return new Inbound({
             enable: json.enable,
             port: json.port,
@@ -63,7 +71,7 @@ class Inbound {
             down: json.down,
             total: json.total,
             expiryTime: json.expiryTime,
-            clientStats: json.clientStats,
+            clientStats: clientStats,
             tag: json.tag
         });
     }
@@ -102,6 +110,20 @@ class Inbound {
             json.streamSettings = JSON.stringify(this.streamSettings);
         } else {
             json.streamSettings = this.streamSettings;
+        }
+
+        // Convert Client objects back to JSON for API
+        if (Array.isArray(this.clientStats)) {
+            json.clientStats = this.clientStats.map(client => {
+                // If it's a Client object, convert to JSON
+                if (client && typeof client.toJSON === 'function') {
+                    return client.toJSON();
+                }
+                // If it's already plain JSON, return as-is
+                return client;
+            });
+        } else {
+            json.clientStats = this.clientStats;
         }
 
         return json;
