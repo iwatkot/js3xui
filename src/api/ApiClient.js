@@ -37,6 +37,32 @@ class ClientApi extends BaseApi {
         
         return Client.fromJSON(clientJson);
     }
+    /**
+     * Retrieves a list of IP addresses associated with a specific client.
+     * This endpoint provides the IPs that the client has used to connect to the service.
+     * 
+     * @param {string} email - The email of the client to retrieve IPs for
+     * @returns {Promise<Array<string>>} An array of IP addresses associated with the client
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * const ips = await api.client.getIps("user@example.com");
+     */
+    async getIps(email) {
+        const endpoint = `panel/api/inbounds/clientIps/${email}`;
+        const headers = { "Accept": "application/json" };
+
+        const url = this._url(endpoint);
+        this.logger.log(`Getting client IPs for email: ${email}`);
+
+        const data = {}
+
+        const response = await this._post(url, headers, data);
+        const ipsJson = response.data[ApiFields.OBJ];
+
+        return Array.isArray(ipsJson) ? ipsJson : [];
+    }
 }
 
 export default ClientApi;

@@ -168,41 +168,32 @@ class BaseApi {
     }
 
     /**
-     * Makes a POST request to the specified URL with authentication check.
+     * Makes a POST request to the specified URL.
      * @param {string} url - URL to send the POST request to
      * @param {Object} [headers={}] - HTTP headers to include
      * @param {Object} [data={}] - Data to send in the request body
      * @param {Object} [options={}] - Additional request options
-     * @param {boolean} [options.isLogin=false] - Whether this is a login request (skips auth check)
      * @returns {Promise<Object>} Promise resolving to axios response object
-     * @throws {Error} Throws error if not logged in (unless isLogin=true) or if request fails
+     * @throws {Error} Throws error if request fails
      */
     async _post(url, headers = {}, data = {}, options = {}) {
-        const { isLogin = false, ...otherOptions } = options;
-        
-        if (!isLogin && !this._session) {
-            throw new Error("Before making a POST request, you must use the login() method.");
-        }
-        
         return this._requestWithRetry('post', url, headers, { 
             data: data, 
-            ...otherOptions 
+            ...options 
         });
     }
 
     /**
-     * Makes a GET request to the specified URL with authentication check.
+     * Makes a GET request to the specified URL.
      * @param {string} url - URL to send the GET request to
      * @param {Object} [headers={}] - HTTP headers to include
      * @param {Object} [options={}] - Additional request options
-     * @param {boolean} [options.isLogin=false] - Whether this is a login request (skips auth check)
      * @returns {Promise<Object>} Promise resolving to axios response object
-     * @throws {Error} Throws error if not logged in (unless isLogin=true) or if request fails
+     * @throws {Error} Throws error if request fails
      */
     async _get(url, headers = {}, options = {}) {
-        const { isLogin = false, ...otherOptions } = options;    
         return this._requestWithRetry('get', url, headers, { 
-            ...otherOptions
+            ...options
         });
     }
 
@@ -232,7 +223,7 @@ class BaseApi {
         
         this.logger.log(`Logging in with username: ${this._username}`);
         
-        const response = await this._post(url, headers, data, { isLogin: true });
+        const response = await this._post(url, headers, data);
     }
 }
 
