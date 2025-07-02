@@ -66,8 +66,6 @@ class BaseApi {
         
         for (let retry = 1; retry <= this._maxRetries; retry++) {
             try {
-                const { skipCheck = false, ...requestOptions } = options;
-                
                 const axiosConfig = {
                     method: method.toLowerCase(),
                     url: url,
@@ -85,14 +83,10 @@ class BaseApi {
                     },
                     jar: this.cookieJar,
                     withCredentials: true,
-                    ...requestOptions
+                    ...options
                 };
 
                 const response = await this.axiosInstance(axiosConfig);
-                
-                if (skipCheck) {
-                    return response;
-                }
                 
                 await this._checkResponse(response);
                 return response;

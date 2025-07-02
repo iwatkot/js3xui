@@ -159,6 +159,33 @@ class ClientApi extends BaseApi {
         await this._post(url, headers, data);
         this.logger.log(`IPs reset successfully for client with email: ${email}`);
     }
+    /**
+     * Resets the traffic statistics for a specific client.
+     * This endpoint clears all traffic data associated with the client,
+     * allowing them to start fresh with their usage statistics.
+     * 
+     * @param {number} inboundId - The ID of the inbound connection the client is associated with
+     * @param {string} email - The email of the client whose stats should be reset
+     * @returns {Promise<void>} Resolves when the stats are successfully reset
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * const inboundId = 1; // Example inbound ID
+     * await api.client.resetStats(inboundId, "user@example.com");
+     */
+    async resetStats(inboundId, email) {
+        const endpoint = `panel/api/inbounds/${inboundId}/resetClientTraffic/${email}`;
+        const headers = { "Accept": "application/json" };
+
+        const url = this._url(endpoint);
+        this.logger.log(`Resetting stats for client with email: ${email}`);
+
+        const data = {};
+
+        await this._post(url, headers, data);
+        this.logger.log(`Stats reset successfully for client with email: ${email}`);
+    }
 }
 
 export default ClientApi;
