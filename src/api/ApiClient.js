@@ -186,6 +186,36 @@ class ClientApi extends BaseApi {
         await this._post(url, headers, data);
         this.logger.log(`Stats reset successfully for client with email: ${email}`);
     }
+    /**
+     * Deletes a specific client from an inbound connection.
+     * This endpoint removes the client from the inbound, effectively terminating their access.
+     * 
+     * @param {number} inboundId - The ID of the inbound connection to delete the client from
+     * @param {string} clientId - The ID of the client to be deleted
+     * @returns {Promise<void>} Resolves when the client is successfully deleted
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * const inboundId = 1; // Example inbound ID
+     * const clientId = "client-id-123"; // Example client ID
+     * await api.client.delete(inboundId, clientId);
+     */
+    async delete(inboundId, clientId) {
+        const endpoint = `panel/api/inbounds/${inboundId}/delClient/${clientId}`;
+        const headers = { "Accept": "application/json" };
+
+        const url = this._url(endpoint);
+        
+        const data = {
+            id: inboundId,
+            clientId: clientId
+        };
+
+        this.logger.log(`Deleting client ${clientId} from inbound ${inboundId}`);
+        await this._post(url, headers, data);
+        this.logger.log(`Client ${clientId} deleted successfully from inbound ${inboundId}`);
+    }
 }
 
 export default ClientApi;
