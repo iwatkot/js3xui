@@ -98,6 +98,42 @@ class ClientApi extends BaseApi {
         await this._post(url, headers, data);
         this.logger.log(`Clients added successfully to inbound ${inboundId}`);
     }
+    /**
+     * Updates an existing client in a specific inbound connection.
+     * This endpoint allows you to modify the details of a client associated with an inbound connection.
+     * 
+     * @param {string} clientId - The ID of the client to update
+     * @param {Client} client - The Client object containing updated information
+     * @returns {Promise<void>} Resolves when the client is successfully updated
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * let existingClient = await api.client.getByEmail("user@example.com");
+     * if (existingClient) {
+     *   existingClient.tgId = "123456789"; // Example tgId, replace with actual value if needed
+     *   await api.client.update(existingClient.id, existingClient);
+     * }
+     */
+    async update(clientId, client) {
+        const endpoint = `panel/api/inbounds/updateClient/${clientId}`;
+        const headers = { "Accept": "application/json" };
+
+        const url = this._url(endpoint);
+
+        const settings = {
+            clients: [client.toJSON()]
+        };
+
+        const data = {
+            id: client.inboundId,
+            settings: JSON.stringify(settings)
+        };
+
+        this.logger.log(`Updating client ${clientId} in inbound ${client.inboundId}`);
+        await this._post(url, headers, data);
+        this.logger.log(`Client ${clientId} updated successfully in inbound ${client.inboundId}`);
+    }
 }
 
 export default ClientApi;
