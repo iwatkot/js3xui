@@ -1,0 +1,17 @@
+{
+  "name": "js3xui",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "JavaScript XUI API client",
+  "main": "src/Api.js",
+  "scripts": {
+    "test": "node test.js",
+    "start": "node test.js"
+  },
+  "dependencies": {
+    "axios": "^1.10.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
