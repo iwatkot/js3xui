@@ -223,7 +223,7 @@ class BaseApi {
         
         this.logger.log(`Logging in with username: ${this._username}`);
         
-        const response = await this._post(url, headers, data);
+        await this._post(url, headers, data);
     }
 }
 
