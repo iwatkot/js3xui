@@ -216,6 +216,33 @@ class ClientApi extends BaseApi {
         await this._post(url, headers, data);
         this.logger.log(`Client ${clientId} deleted successfully from inbound ${inboundId}`);
     }
+    /**
+     * Deletes all clients from an inbound connection that have no traffic.
+     * This endpoint cleans up the inbound by removing clients that are no longer active.
+     * 
+     * @param {number} inboundId - The ID of the inbound connection to delete depleted clients from
+     * @returns {Promise<void>} Resolves when depleted clients are successfully deleted
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * const inboundId = 1; // Example inbound ID
+     * await api.client.deleteDepleted(inboundId);
+     */
+    async deleteDepleted(inboundId) {
+        const endpoint = `panel/api/inbounds/delDepletedClients/${inboundId}`;
+        const headers = { "Accept": "application/json" };
+
+        const url = this._url(endpoint);
+        
+        const data = {
+            id: inboundId
+        };
+
+        this.logger.log(`Deleting depleted clients from inbound ${inboundId}`);
+        await this._post(url, headers, data);
+        this.logger.log(`Depleted clients deleted successfully from inbound ${inboundId}`);
+    }
 }
 
 export default ClientApi;
