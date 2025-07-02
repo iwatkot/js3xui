@@ -1,3 +1,7 @@
+import axios from 'axios';
+import { wrapper } from 'axios-cookiejar-support';
+import { CookieJar } from 'tough-cookie';
+
 /**
  * Constants for API fields used in the XUI API.
  * These fields are used to standardize the keys in API responses.
@@ -50,6 +54,29 @@ class BaseApi {
         this._session = null;
         this._cookieName = null;
         this.logger = logger || console; // Default to console if no logger provided
+        
+        // Initialize cookie jar for better cookie handling
+        this.cookieJar = new CookieJar();
+        this.axiosInstance = wrapper(axios.create({
+            jar: this.cookieJar,
+            withCredentials: true
+        }));
+    }
+
+    get session() {
+        return this._session;
+    }
+
+    set session(value) {
+        this._session = value;
+    }
+
+    get cookieName() {
+        return this._cookieName;
+    }
+
+    set cookieName(value) {
+        this._cookieName = value;
     }
 
     async _requestWithRetry(method, url, headers = {}, options = {}) {
@@ -58,12 +85,13 @@ class BaseApi {
         
         for (let retry = 1; retry <= this._maxRetries; retry++) {
             try {
-                const { skipCheck = false, ...requestOptions } = options;
+                const { skipCheck = false, cookies, ...requestOptions } = options;
                 
                 const axiosConfig = {
                     method: method.toLowerCase(),
                     url: url,
                     headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
                         ...headers
                     },
                     httpsAgent: this._customCertificatePath ? 
@@ -71,19 +99,15 @@ class BaseApi {
                         undefined,
                     rejectUnauthorized: this._useTlsVerify,
                     timeout: 30000,
+                    validateStatus: function (status) {
+                        return status < 500; // Accept any status less than 500
+                    },
+                    jar: this.cookieJar,
                     withCredentials: true,
                     ...requestOptions
                 };
 
-                // Add cookies if available
-                if (Object.keys(this.cookies).length > 0) {
-                    const cookieString = Object.entries(this.cookies)
-                        .map(([name, value]) => `${name}=${value}`)
-                        .join('; ');
-                    axiosConfig.headers['Cookie'] = cookieString;
-                }
-
-                const response = await axios.default(axiosConfig);
+                const response = await this.axiosInstance(axiosConfig);
                 
                 if (skipCheck) {
                     return response;
@@ -93,16 +117,29 @@ class BaseApi {
                 return response;
                 
             } catch (error) {
+                // Create a cleaner error object instead of dumping the whole axios response
+                const cleanError = {
+                    message: error.message,
+                    status: error.response?.status,
+                    statusText: error.response?.statusText,
+                    data: error.response?.data,
+                    code: error.code
+                };
+                
                 if (error.code === 'ECONNABORTED' || error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
                     if (retry === this._maxRetries) {
-                        throw error;
+                        const simpleError = new Error(`${error.code}: ${error.message}`);
+                        simpleError.originalError = cleanError;
+                        throw simpleError;
                     }
                     this.logger.warn(
                         `Request to ${url} failed: ${error.message}, retry ${retry} of ${this._maxRetries}`
                     );
                     await this._sleep(1000 * (retry + 1));
                 } else {
-                    throw error;
+                    const simpleError = new Error(`HTTP ${cleanError.status}: ${cleanError.message}`);
+                    simpleError.originalError = cleanError;
+                    throw simpleError;
                 }
             }
         }
@@ -149,7 +186,11 @@ class BaseApi {
             throw new Error("Before making a GET request, you must use the login() method.");
         }
         
-        return this._requestWithRetry('get', url, headers, otherOptions);
+        return this._requestWithRetry('get', url, headers, { 
+            ...otherOptions,
+            // Pass cookies like Python requests does
+            cookies: this.cookies 
+        });
     }
 
     async login(twoFactorCode = null) {
@@ -198,14 +239,7 @@ class BaseApi {
         }
         return null;
     }
-
-    get cookies() {
-        if (!this._session || !this._cookieName) {
-            return {};
-        }
-        return { [this._cookieName]: this._session };
-    }
 }
 
 export default BaseApi;
-export { ApiFields }; 
+export { ApiFields };

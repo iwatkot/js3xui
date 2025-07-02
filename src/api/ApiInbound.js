@@ -24,10 +24,7 @@ class InboundApi extends BaseApi {
         this.logger.log("Getting inbounds...");
         
         const response = await this._get(url, headers);
-        
         const inboundsJson = response.data[ApiFields.OBJ];
-        // For now, returning raw JSON data. 
-        // In the future, you might want to create Inbound model classes
         return inboundsJson || [];
     }
 }

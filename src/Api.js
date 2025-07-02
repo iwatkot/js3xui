@@ -27,6 +27,31 @@ class Api {
         this.inbound = new InboundApi(
             host, username, password, token, useTlsVerify, customCertificatePath, logger
         );
+        this._session = null;
+        this._cookieName = null;
+    }
+    get session() {
+        return this._session;
+    }
+
+    set session(value) {
+        this._session = value;
+        this.inbound.session = value;
+    }
+
+    get cookieName() {
+        return this._cookieName;
+    }
+
+    set cookieName(value) {
+        this._cookieName = value;
+        this.inbound.cookieName = value;
+    }
+
+    async login(twoFactorCode = null) {
+        await this.inbound.login(twoFactorCode);
+        this.session = this.inbound.session;
+        this.cookieName = this.inbound.cookieName;
     }
 }
 
