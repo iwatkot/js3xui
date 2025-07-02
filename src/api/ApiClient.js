@@ -243,6 +243,32 @@ class ClientApi extends BaseApi {
         await this._post(url, headers, data);
         this.logger.log(`Depleted clients deleted successfully from inbound ${inboundId}`);
     }
+    /**
+     * Retrieves a list of online clients currently connected to the service.
+     * This endpoint provides information about clients that are actively using the service.
+     * The array contains emails of the clients only.
+     * 
+     * @returns {Promise<Array<string>>} An array of emails of online clients.
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * const onlineClients = await api.client.online();
+     */
+    async online() {
+        const endpoint = "panel/api/inbounds/onlines";
+        const headers = { "Accept": "application/json" };
+
+        const url = this._url(endpoint);
+        this.logger.log(`Getting online clients`);
+
+        const data = {};
+
+        const response = await this._post(url, headers, data);
+        const onlineClientsJson = response.data[ApiFields.OBJ];
+
+        return Array.isArray(onlineClientsJson) ? onlineClientsJson : [];
+    }
 }
 
 export default ClientApi;
