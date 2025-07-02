@@ -1,20 +1,7 @@
 import axios from 'axios';
 import { wrapper } from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
-
-/**
- * Constants for API fields used in the XUI API.
- * These fields are used to standardize the keys in API responses.
- */
-class ApiFields {
-    static SUCCESS = "success";
-    static MSG = "msg";
-    static OBJ = "obj";
-    static CLIENT_STATS = "clientStats";
-    static NO_IP_RECORD = "No IP Record";
-    static GET = "GET";
-    static POST = "POST";
-}
+import ApiFields from './ApiFields.js';
 
 /**
  * Common cookie names used by XUI API for session management.
@@ -242,4 +229,3 @@ class BaseApi {
 }
 
 export default BaseApi;
-export { ApiFields };

@@ -1,4 +1,5 @@
-import BaseApi, { ApiFields } from './ApiBase.js';
+import BaseApi from './ApiBase.js';
+import ApiFields from './ApiFields.js';
 
 /**
  * API class for managing inbound connections.
