@@ -50,22 +50,49 @@ class BaseApi {
         }));
     }
 
+    /**
+     * Gets the current session cookie value.
+     * @returns {string|null} The session cookie value or null if not logged in
+     */
     get session() {
         return this._session;
     }
 
+    /**
+     * Sets the session cookie value.
+     * @param {string|null} value - The session cookie value to set
+     */
     set session(value) {
         this._session = value;
     }
 
+    /**
+     * Gets the current cookie name being used for session management.
+     * @returns {string|null} The cookie name or null if not set
+     */
     get cookieName() {
         return this._cookieName;
     }
 
+    /**
+     * Sets the cookie name for session management.
+     * @param {string|null} value - The cookie name to use
+     */
     set cookieName(value) {
         this._cookieName = value;
     }
 
+    /**
+     * Makes HTTP requests with automatic retry logic and error handling.
+     * @param {string} method - HTTP method (GET, POST, etc.)
+     * @param {string} url - Full URL to make the request to
+     * @param {Object} [headers={}] - HTTP headers to include
+     * @param {Object} [options={}] - Additional request options
+     * @param {boolean} [options.skipCheck=false] - Skip response validation
+     * @param {Object} [options.cookies] - Cookies to include in request
+     * @returns {Promise<Object>} Promise resolving to axios response object
+     * @throws {Error} Throws error if request fails after all retries
+     */
     async _requestWithRetry(method, url, headers = {}, options = {}) {
         const axios = await import('axios');
         this.logger.log(`${method.toUpperCase()} request to ${url}...`);
@@ -134,6 +161,13 @@ class BaseApi {
         throw new Error(`Max retries exceeded with no successful response to ${url}`);
     }
 
+    /**
+     * Validates the API response format and checks for success status.
+     * @param {Object} response - Axios response object
+     * @param {Object} response.data - Response data containing API fields
+     * @returns {Promise<void>} Promise that resolves if response is valid
+     * @throws {Error} Throws error if response indicates failure
+     */
     async _checkResponse(response) {
         const responseJson = response.data;
         
@@ -145,14 +179,34 @@ class BaseApi {
         }
     }
 
+    /**
+     * Utility method to pause execution for a specified duration.
+     * @param {number} ms - Number of milliseconds to sleep
+     * @returns {Promise<void>} Promise that resolves after the specified delay
+     */
     _sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    /**
+     * Constructs a complete URL by combining the host with an endpoint.
+     * @param {string} endpoint - API endpoint path
+     * @returns {string} Complete URL for the API request
+     */
     _url(endpoint) {
         return `${this._host}/${endpoint}`;
     }
 
+    /**
+     * Makes a POST request to the specified URL with authentication check.
+     * @param {string} url - URL to send the POST request to
+     * @param {Object} [headers={}] - HTTP headers to include
+     * @param {Object} [data={}] - Data to send in the request body
+     * @param {Object} [options={}] - Additional request options
+     * @param {boolean} [options.isLogin=false] - Whether this is a login request (skips auth check)
+     * @returns {Promise<Object>} Promise resolving to axios response object
+     * @throws {Error} Throws error if not logged in (unless isLogin=true) or if request fails
+     */
     async _post(url, headers = {}, data = {}, options = {}) {
         const { isLogin = false, ...otherOptions } = options;
         
@@ -166,6 +220,15 @@ class BaseApi {
         });
     }
 
+    /**
+     * Makes a GET request to the specified URL with authentication check.
+     * @param {string} url - URL to send the GET request to
+     * @param {Object} [headers={}] - HTTP headers to include
+     * @param {Object} [options={}] - Additional request options
+     * @param {boolean} [options.isLogin=false] - Whether this is a login request (skips auth check)
+     * @returns {Promise<Object>} Promise resolving to axios response object
+     * @throws {Error} Throws error if not logged in (unless isLogin=true) or if request fails
+     */
     async _get(url, headers = {}, options = {}) {
         const { isLogin = false, ...otherOptions } = options;
         
@@ -180,6 +243,12 @@ class BaseApi {
         });
     }
 
+    /**
+     * Authenticates with the XUI API and establishes a session.
+     * @param {string|null} [twoFactorCode=null] - Optional two-factor authentication code
+     * @returns {Promise<void>} Promise that resolves when login is successful
+     * @throws {Error} Throws error if login fails or no session cookie is received
+     */
     async login(twoFactorCode = null) {
         const endpoint = "login";
         const headers = {};
@@ -211,6 +280,13 @@ class BaseApi {
         this._session = cookie;
     }
 
+    /**
+     * Extracts session cookie from HTTP response headers.
+     * @param {Object} response - Axios response object
+     * @param {Object} response.headers - Response headers containing set-cookie
+     * @returns {string|null} Session cookie value or null if not found
+     * @private
+     */
     _getCookie(response) {
         for (const cookieName of COOKIE_NAMES) {
             const setCookieHeader = response.headers['set-cookie'];

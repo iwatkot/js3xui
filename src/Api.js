@@ -30,6 +30,10 @@ class Api {
         this._session = null;
         this._cookieName = null;
     }
+    /**
+     * Returns the current session cookie value.
+     * @returns {string|null} The session cookie value or null if not logged in
+     */
     get session() {
         return this._session;
     }
@@ -39,6 +43,10 @@ class Api {
         this.inbound.session = value;
     }
 
+    /**
+     * Returns the current cookie name.
+     * @returns {string|null} The cookie name or null if not set
+     */
     get cookieName() {
         return this._cookieName;
     }
@@ -48,6 +56,11 @@ class Api {
         this.inbound.cookieName = value;
     }
 
+    /**
+     * Logs in to the XUI API and establishes a session.
+     * @param {string|null} [twoFactorCode=null] - Optional two-factor authentication code
+     * @returns {Promise<void>} Promise that resolves when login is complete
+     */
     async login(twoFactorCode = null) {
         await this.inbound.login(twoFactorCode);
         this.session = this.inbound.session;
