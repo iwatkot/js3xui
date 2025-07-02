@@ -233,41 +233,6 @@ class BaseApi {
         this.logger.log(`Logging in with username: ${this._username}`);
         
         const response = await this._post(url, headers, data, { isLogin: true });
-        const cookie = this._getCookie(response);
-        
-        if (!cookie) {
-            throw new Error("No session cookie found, something wrong with the login...");
-        }
-        
-        this.logger.log(`Session cookie successfully retrieved for username: ${this._username}`);
-        this._session = cookie;
-    }
-
-    /**
-     * Extracts session cookie from HTTP response headers.
-     * @param {Object} response - Axios response object
-     * @param {Object} response.headers - Response headers containing set-cookie
-     * @returns {string|null} Session cookie value or null if not found
-     * @private
-     */
-    _getCookie(response) {
-        const setCookieHeader = response.headers['set-cookie'];
-        if (!setCookieHeader || setCookieHeader.length === 0) {
-            return null;
-        }
-        
-        // Just take the first cookie - the cookie jar handles all of them automatically
-        const firstCookie = setCookieHeader[0];
-        const cookieParts = firstCookie.split(';')[0].split('=');
-        
-        if (cookieParts.length >= 2) {
-            this._cookieName = cookieParts[0];
-            const cookieValue = cookieParts[1];
-            this.logger.log(`Session cookie found: ${this._cookieName}`);
-            return cookieValue;
-        }
-        
-        return null;
     }
 }
 
