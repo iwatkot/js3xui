@@ -1,5 +1,6 @@
 import Client from '../client/Client.js';
 import Settings from './Settings.js';
+import Sniffing from './Sniffing.js';
 
 /**
  * Represents an inbound connection in the XUI API.
@@ -11,9 +12,9 @@ class Inbound {
      * @param {boolean} data.enable - Whether the inbound connection is enabled. Required.
      * @param {number} data.port - The port number for the inbound connection. Required.
      * @param {string} data.protocol - The protocol for the inbound connection. Required.
-     * @param {Settings|Object} data.settings - The settings for the inbound connection. Required.
+     * @param {Settings} data.settings - The settings for the inbound connection. Required.
      * @param {Object|string} [data.streamSettings=""] - The stream settings for the inbound connection. Optional.
-     * @param {Object} data.sniffing - The sniffing settings for the inbound connection. Required.
+     * @param {Sniffing} data.sniffing - The sniffing settings for the inbound connection. Required.
      * @param {string} [data.listen=""] - The listen address for the inbound connection. Optional.
      * @param {string} [data.remark=""] - The remark for the inbound connection. Optional.
      * @param {number} [data.id=0] - The ID of the inbound connection. Optional.
@@ -72,19 +73,31 @@ class Inbound {
         if (typeof json.settings === 'string') {
             try {
                 settingsData = JSON.parse(json.settings);
-            } catch (e) {
+            } catch {
                 console.warn('Failed to parse settings JSON:', json.settings);
                 settingsData = {};
             }
+        }
+
+        // Convert settings to Settings object if it exists
+        let settings = settingsData;
+        if (settingsData && typeof settingsData === 'object') {
+            settings = Settings.fromJSON(settingsData);
+        }
+
+        // Convert sniffing to Sniffing object if it exists
+        let sniffing = json.sniffing;
+        if (json.sniffing && typeof json.sniffing === 'object') {
+            sniffing = Sniffing.fromJSON(json.sniffing);
         }
 
         return new Inbound({
             enable: json.enable,
             port: json.port,
             protocol: json.protocol,
-            settings: settingsData,
+            settings: settings,
             streamSettings: json.streamSettings,
-            sniffing: json.sniffing,
+            sniffing: sniffing,
             listen: json.listen,
             remark: json.remark,
             id: json.id,
@@ -121,8 +134,10 @@ class Inbound {
             json.settings = this.settings;
         }
 
-        // Handle sniffing - convert to JSON string if it's an object
-        if (typeof this.sniffing === 'object') {
+        // Handle sniffing - convert Sniffing object to JSON string if needed
+        if (this.sniffing instanceof Sniffing) {
+            json.sniffing = JSON.stringify(this.sniffing.toJSON());
+        } else if (typeof this.sniffing === 'object') {
             json.sniffing = JSON.stringify(this.sniffing);
         } else {
             json.sniffing = this.sniffing;
