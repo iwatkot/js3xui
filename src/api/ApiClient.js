@@ -134,6 +134,31 @@ class ClientApi extends BaseApi {
         await this._post(url, headers, data);
         this.logger.log(`Client ${clientId} updated successfully in inbound ${client.inboundId}`);
     }
+    /**
+     * Resets the IP addresses associated with a specific client.
+     * This endpoint clears all IPs that the client has used to connect to the service,
+     * effectively resetting their connection history.
+     * 
+     * @param {string} email - The email of the client whose IPs should be reset
+     * @returns {Promise<void>} Resolves when the IPs are successfully reset
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * await api.client.resetIps("user@example.com");
+     */
+    async resetIps(email) {
+        const endpoint = `panel/api/inbounds/clearClientIps/${email}`;
+        const headers = { "Accept": "application/json" };
+
+        const url = this._url(endpoint);
+        this.logger.log(`Resetting IPs for client with email: ${email}`);
+
+        const data = {};
+
+        await this._post(url, headers, data);
+        this.logger.log(`IPs reset successfully for client with email: ${email}`);
+    }
 }
 
 export default ClientApi;
