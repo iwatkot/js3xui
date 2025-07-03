@@ -35,6 +35,23 @@ class InboundApi extends BaseApi {
         // Convert JSON objects to Inbound instances
         return inboundsJson.map(inboundData => Inbound.fromJSON(inboundData));
     }
+    async getById(inboundId) {
+        const endpoint = `panel/api/inbounds/get/${inboundId}`;
+        const headers = { "Accept": "application/json" };
+        
+        const url = this._url(endpoint);
+        this.logger.log(`Getting inbound by ID: ${inboundId}`);
+        
+        const response = await this._get(url, headers);
+        const inboundData = response.data[ApiFields.OBJ];
+        
+        if (!inboundData) {
+            return null;
+        }
+        
+        // Convert JSON object to Inbound instance
+        return Inbound.fromJSON(inboundData);
+    }
 }
 
 export default InboundApi;
