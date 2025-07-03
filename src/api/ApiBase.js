@@ -89,8 +89,9 @@ class BaseApi {
                 const response = await this.axiosInstance(axiosConfig);
                 
                 if (skipCheck) {
-                    await this._checkResponse(response);
+                    return response;
                 }
+                await this._checkResponse(response);
                 return response;
                 
             } catch (error) {
