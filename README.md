@@ -8,7 +8,7 @@ Async Object-oriented JavaScript SDK for the 3x-ui API.
     <a href="#Quick-Start">Quick Start</a> •
     <a href="#Examples">Examples</a> •
     <a href="#Bugs-and-Feature-Requests">Bugs and Feature Requests</a> •
-    <a href="">NPM</a>
+    <a href="https://www.npmjs.com/package/js3xui">NPM</a>
 </p>
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/iwatkot/js3xui)](https://github.com/iwatkot/js3xui/releases)
