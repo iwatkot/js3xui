@@ -52,6 +52,31 @@ class InboundApi extends BaseApi {
         // Convert JSON object to Inbound instance
         return Inbound.fromJSON(inboundData);
     }
+    /**
+     * Adds a new inbound connection.
+     * 
+     * @param {Inbound} inbound - The Inbound instance to add
+     * @returns {Promise<void>} Resolves when the inbound is added successfully
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * const newInbound = new Inbound({ enable: true, port: 8080, protocol: 'vmess' });
+     * await api.inbound.add(newInbound);
+     */
+    async add(inbound) {
+        const endpoint = "panel/api/inbounds/add";
+        const headers = { "Accept": "application/json" };
+        
+        const url = this._url(endpoint);
+        this.logger.log("Adding inbound...");
+        
+        // Convert Inbound instance to JSON
+        const data = inbound.toJSON();
+        
+        await this._post(url, headers, data);
+        this.logger.log("Inbound added successfully.");
+    }
 }
 
 export default InboundApi;
