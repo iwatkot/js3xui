@@ -127,6 +127,48 @@ class InboundApi extends BaseApi {
         await this._post(url, headers, data);
         this.logger.log("Inbound updated successfully.");
     }
+    /**
+     * Resets the traffic statistics for all inbounds.
+     * NOTE: THIS WILL RESET ALL TRAFFIC STATS FOR ALL INBOUNDS! USE WITH CAUTION!
+     * If you need to reset stats for a specific inbound, use the `resetClientStats` method instead.
+     * 
+     * @returns {Promise<void>} Resolves when the stats are reset successfully
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * await api.inbound.resetStats();
+     */
+    async resetStats() {
+        const endpoint = `panel/api/inbounds/resetAllTraffics`;
+        const headers = { "Accept": "application/json" };
+        
+        const url = this._url(endpoint);
+        this.logger.log(`Resetting stats for all inbounds`);
+
+        await this._post(url, headers);
+        this.logger.log("Inbound stats reset successfully.");
+    }
+    /**     * Resets the traffic statistics for all clients associated with a specific inbound.
+     * 
+     * @param {number} inboundId - The ID of the inbound to reset client stats for
+     * @returns {Promise<void>} Resolves when the client stats are reset successfully
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * await api.inbound.resetClientStats(1);
+     */
+    async resetClientStats(inboundId) {
+        const endpoint = `panel/api/inbounds/resetAllClientTraffics/${inboundId}`;
+        const headers = { "Accept": "application/json" };
+        
+        const url = this._url(endpoint);
+        this.logger.log(`Resetting client stats for inbound ID: ${inboundId}`);
+        
+        await this._post(url, headers);
+        this.logger.log("Inbound client stats reset successfully.");
+    }
 }
 
 export default InboundApi;
