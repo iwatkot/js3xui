@@ -1,4 +1,6 @@
 import BaseApi from './ApiBase.js';
+import Server from '../server/Server.js';
+import ApiFields from './ApiFields.js';
 import fs from 'fs';
 
 /** * This class provides methods to interact with the server API, such as downloading the database.
@@ -35,6 +37,24 @@ class ServerApi extends BaseApi {
 
         fs.writeFileSync(savePath, response.data, 'binary');
         this.logger.log(`Database saved to ${savePath}`);
+    }
+    async getStatus(){
+        const endpoint = "server/status";
+        const headers = {"Accept": "application/json"};
+
+        const url = this._url(endpoint);
+        this.logger.log("Getting server status...");
+
+        const response = await this._post(url, headers);
+
+        const serverData = response.data[ApiFields.OBJ];
+
+        if (!serverData) {
+            return null;
+        }
+
+        return Server.fromJSON(serverData);
+
     }
 }
 
