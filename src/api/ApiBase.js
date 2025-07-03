@@ -58,10 +58,11 @@ class BaseApi {
      * @param {string} url - Full URL to make the request to
      * @param {Object} [headers={}] - HTTP headers to include
      * @param {Object} [options={}] - Additional request options
+     * @param {boolean} [skipCheck=false] - Whether to skip response validation
      * @returns {Promise<Object>} Promise resolving to axios response object
      * @throws {Error} Throws error if request fails after all retries
      */
-    async _requestWithRetry(method, url, headers = {}, options = {}) {
+    async _requestWithRetry(method, url, headers = {}, options = {}, skipCheck = false) {
         this.logger.log(`${method.toUpperCase()} request to ${url}...`);
         
         for (let retry = 1; retry <= this._maxRetries; retry++) {
@@ -87,7 +88,9 @@ class BaseApi {
 
                 const response = await this.axiosInstance(axiosConfig);
                 
-                await this._checkResponse(response);
+                if (skipCheck) {
+                    await this._checkResponse(response);
+                }
                 return response;
                 
             } catch (error) {
@@ -166,11 +169,11 @@ class BaseApi {
      * @returns {Promise<Object>} Promise resolving to axios response object
      * @throws {Error} Throws error if request fails
      */
-    async _post(url, headers = {}, data = {}, options = {}) {
+    async _post(url, headers = {}, data = {}, options = {}, skipCheck = false) {
         return this._requestWithRetry('post', url, headers, { 
             data: data, 
             ...options 
-        });
+        }, skipCheck);
     }
 
     /**
@@ -181,10 +184,10 @@ class BaseApi {
      * @returns {Promise<Object>} Promise resolving to axios response object
      * @throws {Error} Throws error if request fails
      */
-    async _get(url, headers = {}, options = {}) {
+    async _get(url, headers = {}, options = {}, skipCheck = false) {
         return this._requestWithRetry('get', url, headers, { 
             ...options
-        });
+        }, skipCheck);
     }
 
     /**

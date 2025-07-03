@@ -1,5 +1,6 @@
 import InboundApi from './api/ApiInbound.js';
 import ClientApi from './api/ApiClient.js';
+import DatabaseApi from './api/ApiDatabase.js';
 import { wrapper } from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
 import axios from 'axios';
@@ -41,6 +42,10 @@ class Api {
             this.cookieJar, this.axiosInstance
         );
         this.inbound = new InboundApi(
+            host, username, password, token, useTlsVerify, customCertificatePath, logger,
+            this.cookieJar, this.axiosInstance
+        );
+        this.database = new DatabaseApi(
             host, username, password, token, useTlsVerify, customCertificatePath, logger,
             this.cookieJar, this.axiosInstance
         );
