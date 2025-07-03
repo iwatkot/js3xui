@@ -17,6 +17,7 @@ Async Object-oriented JavaScript SDK for the 3x-ui API.
 [![NPM - Downloads](https://img.shields.io/npm/dm/js3xui)](https://www.npmjs.com/package/js3xui)<br>
 [![NPM - Node Version](https://img.shields.io/npm/v/js3xui)](https://www.npmjs.com/package/js3xui/)
 
+_ℹ️ If you need a Python SDK, check out [py3xui](https://github.com/iwatkot/py3xui)._
 </div>
 
 ## Overview
