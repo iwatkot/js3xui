@@ -1,5 +1,5 @@
 <div align="center" markdown>
-<img src="">
+<img src="https://github.com/iwatkot/js3xui/releases/download/0.0.1/poster.png">
 
 Async Object-oriented JavaScript SDK for the 3x-ui API.
 
