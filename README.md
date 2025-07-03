@@ -28,12 +28,12 @@ Used dependencies:
 - [axios-cookiejar-support](https://www.npmjs.com/package/axios-cookiejar-support)
 - [tough-cookie](https://www.npmjs.com/package/tough-cookie)
 
-Since the 3x-ui app is under development, the SDK may not be compatible with all versions of the app. The developer of SDK is not related to the 3x-ui app, therefore the latest versions of the software are not guaranteed to be compatible with the SDK. <br>
+Since the 3x-ui app is under development, the SDK may not be compatible with all versions of the app. The developer of the SDK is not related to the 3x-ui app; therefore, the latest versions of the software are not guaranteed to be compatible with the SDK. <br>
 The SDK does not support versions of the 3x-ui older than `2.3.7`.
 
 ## Quick Start
 After installing the SDK, you can create a new instance of the API. <br>
-On creation, the Api won't connect to the 3x-ui app, so you can spawn new instances without spending resources. But after creating an instance, you'll need to call the `login` method to authenticate the user and save the cookie for future requests.
+On creation, the Api won't connect to the 3x-UI app, so you can spawn new instances without spending resources. But after creating an instance, you'll need to call the `login` method to authenticate the user and save the cookie for future requests.
 
 ### Installation
 ```bash
@@ -56,14 +56,14 @@ const api = new Api(host, user, password);
 If your host is `http://your-3x-ui-host.com:2053` and the URI Path is `/test/`, then the host should be `http://your-3x-ui-host.com:2053/test/`.<br>
 Otherwise, all API requests will fail with a `404` error.  
 
-*️⃣ If you're using a secret token, which is set in in the 3x-ui panel, you'll also add it, otherwise all API request will fail.<br>
+*️⃣ If you're using a secret token, which is set in the 3x-ui panel, you'll also add it; otherwise, all API request will fail.<br>
 
 ```javascript
 const api = new Api(host, user, password, 'your-secret-token');
 ```
 
 ### Using TLS and custom certificates
-Interacting with server over HTTPS requires careful management of TLS verification to ensure secure communications. This SDK provides options for setting TLS configurations, which include specifying custom certificates for increased trust or disabling TLS verification when necessary.
+Interacting with a server over HTTPS requires careful management of TLS verification to ensure secure communications. This SDK provides options for setting TLS configurations, which include specifying custom certificates for increased trust or disabling TLS verification when necessary.
 
 #### Case 1: Disabling TLS verification
 For development, you can disable TLS verification. This is not recommended for production due to the increased risk of security threats like man-in-the-middle attacks.
@@ -96,11 +96,11 @@ const api = new Api(host, user, password);
 await api.login("your-2fa-code");
 ```
 
-Note, that the two-factor code is being changed every 30 seconds, so you need to ensure that you pass the correct code when calling the `login` method. If you don't pass the code, the login will fail.  
-Keep in mind, that the session cookie has it's own expiration time, so you may need to call the `login` method again after some time while providing the new two-factor code. So, it's recommended to have some sort of automation to retrieve the valid two-factor code from time to time.
+Note that the two-factor code is being changed every 30 seconds, so you need to ensure that you pass the correct code when calling the `login` method. If you don't pass the code, the login will fail.  
+Keep in mind that the session cookie has its own expiration time, so you may need to call the `login` method again after some time while providing the new two-factor code. So, it's recommended to have some sort of automation to retrieve the valid two-factor code from time to time.
 
 ## Examples
-You'll find detailed docs with usage examples [here](src/README.md), however in this section you'll find some basic examples of how to use the SDK.
+You'll find detailed docs with usage examples [here](src/README.md); however, in this section, you'll find some basic examples of how to use the SDK.
 
 ### Set the traffic limit for the client
 
@@ -153,7 +153,7 @@ console.log(`Client ${user_email} updated with new traffic limit.`);
 ```
 
 ### Create a connection string and QR code
-When you need to provide the user with a connection string that can be used in a software to create a new connection profile and/or a QR code, you can use the following example.
+When you need to provide the user with a connection string that can be used in software to create a new connection profile and/or a QR code, you can use the following example.
 
 ```javascript
 import { Inbound } from 'js3xui';
@@ -163,7 +163,7 @@ const MAIN_REMARK = "yourremarkhere";  // ⬅️ It can be any string.
 const SERVER_PORT = 443;  // ⬅️ Your server port here.
 
 /**
- * Prepare a connection string for the given inbound, user UUID and user email.
+ * Prepare a connection string for the given inbound, user UUID, and user email.
  * 
  * @param {Inbound} inbound - The inbound object.
  * @param {string} userUuid - The UUID of the user.
@@ -216,7 +216,7 @@ console.log(`QR code saved to: ${qrcodePath}`);
 // Now you can use the qrcodePath or qrCodeDataURL to share with the user
 ```
 
-### Get inbounds list
+### Get inbound list
 
 ```javascript
 import Api from 'js3xui';
