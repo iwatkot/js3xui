@@ -1,0 +1,24 @@
+# Development and build scripts
+generate-docs.js
+test.js
+eslint.config.js
+jsdoc.json
+
+# Development dependencies and configs
+.gitignore
+.git/
+.vscode/
+.idea/
+
+# Documentation generation temp files
+docs/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
