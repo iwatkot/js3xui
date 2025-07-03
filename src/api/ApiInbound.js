@@ -77,6 +77,29 @@ class InboundApi extends BaseApi {
         await this._post(url, headers, data);
         this.logger.log("Inbound added successfully.");
     }
+    /**
+     * Deletes an existing inbound connection by its ID.
+     * 
+     * @param {Inbound} inbound - The Inbound instance to delete
+     * @returns {Promise<void>} Resolves when the inbound is deleted successfully
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * const existingInbound = await api.inbound.getById(1);
+     * existingInbound.port = 9090; // Change port
+     * await api.inbound.update(existingInbound);
+     */
+    async delete(inboundId) {
+        const endpoint = `panel/api/inbounds/del/${inboundId}`;
+        const headers = { "Accept": "application/json" };
+        
+        const url = this._url(endpoint);
+        this.logger.log(`Deleting inbound with ID: ${inboundId}`);
+        
+        await this._post(url, headers);
+        this.logger.log("Inbound deleted successfully.");
+    }
 }
 
 export default InboundApi;
