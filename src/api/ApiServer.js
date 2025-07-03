@@ -38,7 +38,19 @@ class ServerApi extends BaseApi {
         fs.writeFileSync(savePath, response.data, 'binary');
         this.logger.log(`Database saved to ${savePath}`);
     }
-    async getStatus(){
+    /**
+     * Retrieves the current server status.
+     * @return {Promise<Server|null>} Resolves to a Server object containing server status, or null if not available
+     * 
+     * @example
+     * 
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * const status = await api.getStatus();
+     * console.log(status);
+     * 
+     */
+    async getStatus() {
         const endpoint = "server/status";
         const headers = {"Accept": "application/json"};
 
