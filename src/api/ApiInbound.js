@@ -100,6 +100,33 @@ class InboundApi extends BaseApi {
         await this._post(url, headers);
         this.logger.log("Inbound deleted successfully.");
     }
+    /**
+     * Updates an existing inbound connection.
+     * 
+     * @param {number} inboundId - The ID of the Inbound to update
+     * @param {Inbound} inbound - The updated Inbound instance
+     * @returns {Promise<void>} Resolves when the inbound is updated successfully
+     * 
+     * @example
+     * const api = new Api('host', 'user', 'pass');
+     * await api.login();
+     * const existingInbound = await api.inbound.getById(1);
+     * existingInbound.remark = "Updated Remark"; // Change remark
+     * await api.inbound.update(existingInbound.id, existingInbound);
+     */
+    async update(inboundId, inbound) {
+        const endpoint = `panel/api/inbounds/update/${inboundId}`;
+        const headers = { "Accept": "application/json" };
+        
+        const url = this._url(endpoint);
+        this.logger.log(`Updating inbound with ID: ${inboundId}`);
+        
+        // Convert Inbound instance to JSON
+        const data = inbound.toJSON();
+        
+        await this._post(url, headers, data);
+        this.logger.log("Inbound updated successfully.");
+    }
 }
 
 export default InboundApi;
