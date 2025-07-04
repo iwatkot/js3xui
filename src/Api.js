@@ -62,7 +62,7 @@ class Api {
         await this.inbound.login(twoFactorCode);
     }
     /**
-     * Returns the instance of the Client API if the require environment variables are set.
+     * Returns the instance of the Client API if the required environment variables are set.
      * List of required environment variables:
      * - `XUI_HOST`: The host URL for the XUI API
      * - `XUI_USERNAME`: The username for authentication
