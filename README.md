@@ -43,6 +43,20 @@ npm install js3xui
 
 ### Create a new instance of the API
 
+It's recommended to use an environment variable to store the API credentials:
+
+```javascript
+import Api from 'js3xui';
+
+process.env.XUI_HOST = 'http://localhost:3000'; // 3x-ui host
+process.env.XUI_USERNAME = 'admin'; // 3x-ui username
+process.env.XUI_PASSWORD = 'admin'; // 3x-ui password
+
+const api = Api.fromEnv();
+```
+
+Or you can create an instance of the API by passing the host, username, and password directly:
+
 ```javascript
 import Api from 'js3xui';
 
@@ -73,7 +87,21 @@ If you are interacting with a server that uses a self-signed certificate or one 
 const api = new Api("http://your-3x-ui-host.com:2053", "your-username", "your-password", { customCertificatePath: "/path/to/your/certificate.pem" })
 ```
 
-This allows you to maintain TLS verification by providing a trusted certificate explicitly.
+This allows you to maintain TLS verification by providing a trusted certificate explicitly.  
+
+It's also possible to store both the `customCertificatePath` and `useTlsVerify` in environment variables, so you can easily switch between different configurations without changing the code.
+
+```javascript
+import Api from 'js3xui';
+
+process.env.XUI_HOST = 'http://your-3x-ui-host.com:2053';
+process.env.XUI_USERNAME = 'your-username';
+process.env.XUI_PASSWORD = 'your-password';
+process.env.TLS_VERIFY = 'false'; // by default it's true
+process.env.TLS_CERT_PATH = '/path/to/your/certificate.pem';
+
+const api = Api.fromEnv();
+```
 
 ### Login
 Before making a calls you'll need to call the `login` method to authenticate the user and save the cookie for future requests.

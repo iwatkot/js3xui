@@ -78,21 +78,21 @@ class Api {
      * 
      * @example
      * 
-     * process.env.XUI_API_HOST = 'https://your-host.com';
-     * process.env.XUI_API_USERNAME = 'your-username';
-     * process.env.XUI_API_PASSWORD = 'your-password';
+     * process.env.XUI_HOST = 'https://your-host.com';
+     * process.env.XUI_USERNAME = 'your-username';
+     * process.env.XUI_PASSWORD = 'your-password';
      * 
      * const api = Api.fromEnv();
      * await api.login();
      */
     static fromEnv (logger = null) {
-        const host = process.env.XUI_API_HOST;
-        const username = process.env.XUI_API_USERNAME;
-        const password = process.env.XUI_API_PASSWORD;
+        const host = process.env.XUI_HOST;
+        const username = process.env.XUI_USERNAME;
+        const password = process.env.XUI_PASSWORD;
 
         // Check the first three required environment variables.
         if (!host || !username || !password) {
-            throw new Error("One or more required environment variables are missing: XUI_API_HOST, XUI_API_USERNAME, XUI_API_PASSWORD");
+            throw new Error("One or more required environment variables are missing: XUI_HOST, XUI_USERNAME, XUI_PASSWORD");
         }
 
         const useTlsVerify = process.env.TLS_VERIFY === 'true';
