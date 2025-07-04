@@ -16,7 +16,6 @@ class Api {
      * @param {string} host - The host URL
      * @param {string} username - The username for authentication
      * @param {string} password - The password for authentication
-     * @param {string|null} [token=null] - Optional authentication token
      * @param {boolean} [useTlsVerify=true] - Whether to verify TLS certificates
      * @param {string|null} [customCertificatePath=null] - Path to custom certificate
      * @param {*} [logger=null] - Optional logger instance
@@ -25,7 +24,6 @@ class Api {
         host,
         username,
         password,
-        token = null,
         useTlsVerify = true,
         customCertificatePath = null,
         logger = null
@@ -39,19 +37,19 @@ class Api {
         
         // Create API instances and pass the shared cookie jar and axios instance
         this.client = new ClientApi(
-            host, username, password, token, useTlsVerify, customCertificatePath, logger,
+            host, username, password, useTlsVerify, customCertificatePath, logger,
             this.cookieJar, this.axiosInstance
         );
         this.inbound = new InboundApi(
-            host, username, password, token, useTlsVerify, customCertificatePath, logger,
+            host, username, password, useTlsVerify, customCertificatePath, logger,
             this.cookieJar, this.axiosInstance
         );
         this.database = new DatabaseApi(
-            host, username, password, token, useTlsVerify, customCertificatePath, logger,
+            host, username, password, useTlsVerify, customCertificatePath, logger,
             this.cookieJar, this.axiosInstance
         );
         this.server = new ServerApi(
-            host, username, password, token, useTlsVerify, customCertificatePath, logger,
+            host, username, password, useTlsVerify, customCertificatePath, logger,
             this.cookieJar, this.axiosInstance
         );
     }
