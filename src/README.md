@@ -78,7 +78,10 @@ Access to the client, inbound, and database APIs is provided through this class.
 
 * [Api](#Api)
     * [new Api(host, username, password, [useTlsVerify], [customCertificatePath], [logger])](#new_Api_new)
-    * [.login([twoFactorCode])](#Api+login) ⇒ <code>Promise.&lt;void&gt;</code>
+    * _instance_
+        * [.login([twoFactorCode])](#Api+login) ⇒ <code>Promise.&lt;void&gt;</code>
+    * _static_
+        * [.fromEnv([logger])](#Api.fromEnv) ⇒ [<code>ClientApi</code>](#ClientApi)
 
 <a name="new_Api_new"></a>
 
@@ -107,6 +110,39 @@ Logs in to the XUI API and establishes a session.
 | --- | --- | --- | --- |
 | [twoFactorCode] | <code>string</code> \| <code>null</code> | <code>null</code> | Optional two-factor authentication code |
 
+<a name="Api.fromEnv"></a>
+
+### Api.fromEnv([logger]) ⇒ [<code>ClientApi</code>](#ClientApi)
+Returns the instance of the Client API if the require environment variables are set.
+List of required environment variables:
+- `XUI_API_HOST`: The host URL for the XUI API
+- `XUI_API_USERNAME`: The username for authentication
+- `XUI_API_PASSWORD`: The password for authentication
+
+List of optional environment variables:
+- `TLS_VERIFY`: Whether to verify TLS certificates (default: true)
+- `TLS_CERT_PATH`: Path to a custom TLS certificate (default: null)
+
+**Kind**: static method of [<code>Api</code>](#Api)  
+**Returns**: [<code>ClientApi</code>](#ClientApi) - The Client API instance  
+**Throws**:
+
+- <code>Error</code> If the required environment variables are not set
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [logger] | <code>Object</code> | <code></code> | Optional logger instance to use for logging |
+
+**Example**  
+```js
+process.env.XUI_HOST = 'https://your-host.com';
+process.env.XUI_USERNAME = 'your-username';
+process.env.XUI_PASSWORD = 'your-password';
+
+const api = Api.fromEnv();
+await api.login();
+```
 <a name="BaseApi"></a>
 
 ## BaseApi
