@@ -95,7 +95,7 @@ class Api {
             throw new Error("One or more required environment variables are missing: XUI_HOST, XUI_USERNAME, XUI_PASSWORD");
         }
 
-        const useTlsVerify = process.env.TLS_VERIFY === 'true';
+        const useTlsVerify = process.env.TLS_VERIFY !== 'false' && process.env.TLS_VERIFY !== '0';
         const customCertificatePath = process.env.TLS_CERT_PATH || null;
 
         // If logger is not provided, default to console logger.
