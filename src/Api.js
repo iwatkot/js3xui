@@ -85,7 +85,7 @@ class Api {
      * const api = Api.fromEnv();
      * await api.login();
      */
-    static fromEnv (logger = null) {
+    static fromEnv(logger = null) {
         const host = process.env.XUI_HOST;
         const username = process.env.XUI_USERNAME;
         const password = process.env.XUI_PASSWORD;
