@@ -57,12 +57,6 @@ const api = new Api(host, user, password);
 If your host is `http://your-3x-ui-host.com:2053` and the URI Path is `/test/`, then the host should be `http://your-3x-ui-host.com:2053/test/`.<br>
 Otherwise, all API requests will fail with a `404` error.  
 
-*️⃣ If you're using a secret token, which is set in the 3x-ui panel, you'll also add it; otherwise, all API request will fail.<br>
-
-```javascript
-const api = new Api(host, user, password, 'your-secret-token');
-```
-
 ### Using TLS and custom certificates
 Interacting with a server over HTTPS requires careful management of TLS verification to ensure secure communications. This SDK provides options for setting TLS configurations, which include specifying custom certificates for increased trust or disabling TLS verification when necessary.
 

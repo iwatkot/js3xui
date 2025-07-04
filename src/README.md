@@ -71,17 +71,18 @@ It extends the BaseApi class to inherit common API functionality.</p>
 <a name="Api"></a>
 
 ## Api
-This class provides a high-level interface to interact with the XUI API.Access to the client, inbound, and database APIs is provided through this class.
+This class provides a high-level interface to interact with the XUI API.
+Access to the client, inbound, and database APIs is provided through this class.
 
 **Kind**: global class  
 
 * [Api](#Api)
-    * [new Api(host, username, password, [token], [useTlsVerify], [customCertificatePath], [logger])](#new_Api_new)
+    * [new Api(host, username, password, [useTlsVerify], [customCertificatePath], [logger])](#new_Api_new)
     * [.login([twoFactorCode])](#Api+login) ⇒ <code>Promise.&lt;void&gt;</code>
 
 <a name="new_Api_new"></a>
 
-### new Api(host, username, password, [token], [useTlsVerify], [customCertificatePath], [logger])
+### new Api(host, username, password, [useTlsVerify], [customCertificatePath], [logger])
 Creates an instance of Api.
 
 
@@ -90,7 +91,6 @@ Creates an instance of Api.
 | host | <code>string</code> |  | The host URL |
 | username | <code>string</code> |  | The username for authentication |
 | password | <code>string</code> |  | The password for authentication |
-| [token] | <code>string</code> \| <code>null</code> | <code>null</code> | Optional authentication token |
 | [useTlsVerify] | <code>boolean</code> | <code>true</code> | Whether to verify TLS certificates |
 | [customCertificatePath] | <code>string</code> \| <code>null</code> | <code>null</code> | Path to custom certificate |
 | [logger] | <code>\*</code> | <code></code> | Optional logger instance |
@@ -115,7 +115,7 @@ Base class for the XUI API. Contains common methods for making requests.
 **Kind**: global class  
 
 * [BaseApi](#BaseApi)
-    * [new BaseApi(host, username, password, [token], [useTlsVerify], [customCertificatePath], [logger], [sharedCookieJar], [sharedAxiosInstance])](#new_BaseApi_new)
+    * [new BaseApi(host, username, password, [useTlsVerify], [customCertificatePath], [logger], [sharedCookieJar], [sharedAxiosInstance])](#new_BaseApi_new)
     * [._requestWithRetry(method, url, [headers], [options], [skipCheck])](#BaseApi+_requestWithRetry) ⇒ <code>Promise.&lt;Object&gt;</code>
     * [._checkResponse(response)](#BaseApi+_checkResponse) ⇒ <code>Promise.&lt;void&gt;</code>
     * [._sleep(ms)](#BaseApi+_sleep) ⇒ <code>Promise.&lt;void&gt;</code>
@@ -126,7 +126,7 @@ Base class for the XUI API. Contains common methods for making requests.
 
 <a name="new_BaseApi_new"></a>
 
-### new BaseApi(host, username, password, [token], [useTlsVerify], [customCertificatePath], [logger], [sharedCookieJar], [sharedAxiosInstance])
+### new BaseApi(host, username, password, [useTlsVerify], [customCertificatePath], [logger], [sharedCookieJar], [sharedAxiosInstance])
 Creates an instance of BaseApi.
 
 
@@ -135,7 +135,6 @@ Creates an instance of BaseApi.
 | host | <code>string</code> |  | The host URL |
 | username | <code>string</code> |  | The username for authentication |
 | password | <code>string</code> |  | The password for authentication |
-| [token] | <code>string</code> \| <code>null</code> | <code>null</code> | Optional authentication token |
 | [useTlsVerify] | <code>boolean</code> | <code>true</code> | Whether to verify TLS certificates |
 | [customCertificatePath] | <code>string</code> \| <code>null</code> | <code>null</code> | Path to custom certificate |
 | [logger] | <code>\*</code> | <code></code> | Optional logger instance |
@@ -259,7 +258,8 @@ Authenticates with the XUI API and establishes a session.
 <a name="ClientApi"></a>
 
 ## ClientApi
-API class for managing client connections.Inherits from BaseApi to provide client-specific functionality.
+API class for managing client connections.
+Inherits from BaseApi to provide client-specific functionality.
 
 **Kind**: global class  
 
@@ -278,7 +278,9 @@ API class for managing client connections.Inherits from BaseApi to provide clie
 <a name="ClientApi+getByEmail"></a>
 
 ### clientApi.getByEmail(email) ⇒ <code>Promise.&lt;(Client\|null)&gt;</code>
-Retrieves information about a specific client based on their email.This endpoint provides details such as traffic statistics and other relevant informationrelated to the client.
+Retrieves information about a specific client based on their email.
+This endpoint provides details such as traffic statistics and other relevant information
+related to the client.
 
 **Kind**: instance method of [<code>ClientApi</code>](#ClientApi)  
 **Returns**: <code>Promise.&lt;(Client\|null)&gt;</code> - The client object if found, otherwise null  
@@ -289,12 +291,15 @@ Retrieves information about a specific client based on their email.This endpoin
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const client = await api.client.getByEmail("user@example.com");
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const client = await api.client.getByEmail("user@example.com");
 ```
 <a name="ClientApi+getIps"></a>
 
 ### clientApi.getIps(email) ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
-Retrieves a list of IP addresses associated with a specific client.This endpoint provides the IPs that the client has used to connect to the service.
+Retrieves a list of IP addresses associated with a specific client.
+This endpoint provides the IPs that the client has used to connect to the service.
 
 **Kind**: instance method of [<code>ClientApi</code>](#ClientApi)  
 **Returns**: <code>Promise.&lt;Array.&lt;string&gt;&gt;</code> - An array of IP addresses associated with the client  
@@ -305,12 +310,16 @@ Retrieves a list of IP addresses associated with a specific client.This endpoin
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const ips = await api.client.getIps("user@example.com");
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const ips = await api.client.getIps("user@example.com");
 ```
 <a name="ClientApi+add"></a>
 
 ### clientApi.add(inboundId, clients) ⇒ <code>Promise.&lt;void&gt;</code>
-Adds one or more clients to a specific inbound connection.This endpoint allows you to associate clients with an inbound connection,enabling them to access the service through that connection.
+Adds one or more clients to a specific inbound connection.
+This endpoint allows you to associate clients with an inbound connection,
+enabling them to access the service through that connection.
 
 **Kind**: instance method of [<code>ClientApi</code>](#ClientApi)  
 **Returns**: <code>Promise.&lt;void&gt;</code> - Resolves when the clients are successfully added  
@@ -322,12 +331,17 @@ Adds one or more clients to a specific inbound connection.This endpoint allows 
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const newClientId = crypto.randomUUID();const newClient = new Client({ email: "user@example.com", enable: true, id: newClientId });await api.client.add(1, [newClient]);
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const newClientId = crypto.randomUUID();
+const newClient = new Client({ email: "user@example.com", enable: true, id: newClientId });
+await api.client.add(1, [newClient]);
 ```
 <a name="ClientApi+update"></a>
 
 ### clientApi.update(clientId, client) ⇒ <code>Promise.&lt;void&gt;</code>
-Updates an existing client in a specific inbound connection.This endpoint allows you to modify the details of a client associated with an inbound connection.
+Updates an existing client in a specific inbound connection.
+This endpoint allows you to modify the details of a client associated with an inbound connection.
 
 **Kind**: instance method of [<code>ClientApi</code>](#ClientApi)  
 **Returns**: <code>Promise.&lt;void&gt;</code> - Resolves when the client is successfully updated  
@@ -339,12 +353,20 @@ Updates an existing client in a specific inbound connection.This endpoint allow
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();let existingClient = await api.client.getByEmail("user@example.com");if (existingClient) {  existingClient.tgId = "123456789"; // Example tgId, replace with actual value if needed  await api.client.update(existingClient.id, existingClient);}
+const api = new Api('host', 'user', 'pass');
+await api.login();
+let existingClient = await api.client.getByEmail("user@example.com");
+if (existingClient) {
+  existingClient.tgId = "123456789"; // Example tgId, replace with actual value if needed
+  await api.client.update(existingClient.id, existingClient);
+}
 ```
 <a name="ClientApi+resetIps"></a>
 
 ### clientApi.resetIps(email) ⇒ <code>Promise.&lt;void&gt;</code>
-Resets the IP addresses associated with a specific client.This endpoint clears all IPs that the client has used to connect to the service,effectively resetting their connection history.
+Resets the IP addresses associated with a specific client.
+This endpoint clears all IPs that the client has used to connect to the service,
+effectively resetting their connection history.
 
 **Kind**: instance method of [<code>ClientApi</code>](#ClientApi)  
 **Returns**: <code>Promise.&lt;void&gt;</code> - Resolves when the IPs are successfully reset  
@@ -355,12 +377,16 @@ Resets the IP addresses associated with a specific client.This endpoint clears 
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();await api.client.resetIps("user@example.com");
+const api = new Api('host', 'user', 'pass');
+await api.login();
+await api.client.resetIps("user@example.com");
 ```
 <a name="ClientApi+resetStats"></a>
 
 ### clientApi.resetStats(inboundId, email) ⇒ <code>Promise.&lt;void&gt;</code>
-Resets the traffic statistics for a specific client.This endpoint clears all traffic data associated with the client,allowing them to start fresh with their usage statistics.
+Resets the traffic statistics for a specific client.
+This endpoint clears all traffic data associated with the client,
+allowing them to start fresh with their usage statistics.
 
 **Kind**: instance method of [<code>ClientApi</code>](#ClientApi)  
 **Returns**: <code>Promise.&lt;void&gt;</code> - Resolves when the stats are successfully reset  
@@ -372,12 +398,16 @@ Resets the traffic statistics for a specific client.This endpoint clears all tr
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const inboundId = 1; // Example inbound IDawait api.client.resetStats(inboundId, "user@example.com");
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const inboundId = 1; // Example inbound ID
+await api.client.resetStats(inboundId, "user@example.com");
 ```
 <a name="ClientApi+delete"></a>
 
 ### clientApi.delete(inboundId, clientId) ⇒ <code>Promise.&lt;void&gt;</code>
-Deletes a specific client from an inbound connection.This endpoint removes the client from the inbound, effectively terminating their access.
+Deletes a specific client from an inbound connection.
+This endpoint removes the client from the inbound, effectively terminating their access.
 
 **Kind**: instance method of [<code>ClientApi</code>](#ClientApi)  
 **Returns**: <code>Promise.&lt;void&gt;</code> - Resolves when the client is successfully deleted  
@@ -389,12 +419,17 @@ Deletes a specific client from an inbound connection.This endpoint removes the 
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const inboundId = 1; // Example inbound IDconst clientId = "client-id-123"; // Example client IDawait api.client.delete(inboundId, clientId);
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const inboundId = 1; // Example inbound ID
+const clientId = "client-id-123"; // Example client ID
+await api.client.delete(inboundId, clientId);
 ```
 <a name="ClientApi+deleteDepleted"></a>
 
 ### clientApi.deleteDepleted(inboundId) ⇒ <code>Promise.&lt;void&gt;</code>
-Deletes all clients from an inbound connection that have no traffic.This endpoint cleans up the inbound by removing clients that are no longer active.
+Deletes all clients from an inbound connection that have no traffic.
+This endpoint cleans up the inbound by removing clients that are no longer active.
 
 **Kind**: instance method of [<code>ClientApi</code>](#ClientApi)  
 **Returns**: <code>Promise.&lt;void&gt;</code> - Resolves when depleted clients are successfully deleted  
@@ -405,23 +440,32 @@ Deletes all clients from an inbound connection that have no traffic.This endpoi
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const inboundId = 1; // Example inbound IDawait api.client.deleteDepleted(inboundId);
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const inboundId = 1; // Example inbound ID
+await api.client.deleteDepleted(inboundId);
 ```
 <a name="ClientApi+online"></a>
 
 ### clientApi.online() ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
-Retrieves a list of online clients currently connected to the service.This endpoint provides information about clients that are actively using the service.The array contains emails of the clients only.
+Retrieves a list of online clients currently connected to the service.
+This endpoint provides information about clients that are actively using the service.
+The array contains emails of the clients only.
 
 **Kind**: instance method of [<code>ClientApi</code>](#ClientApi)  
 **Returns**: <code>Promise.&lt;Array.&lt;string&gt;&gt;</code> - An array of emails of online clients.  
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const onlineClients = await api.client.online();
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const onlineClients = await api.client.online();
 ```
 <a name="ClientApi+getTrafficById"></a>
 
 ### clientApi.getTrafficById(clientId) ⇒ <code>Promise.&lt;Array.&lt;Client&gt;&gt;</code>
-Retrieves traffic information for a specific client by their ID.This endpoint provides traffic statistics and other relevant informationrelated to the client identified by their unique ID.
+Retrieves traffic information for a specific client by their ID.
+This endpoint provides traffic statistics and other relevant information
+related to the client identified by their unique ID.
 
 **Kind**: instance method of [<code>ClientApi</code>](#ClientApi)  
 **Returns**: <code>Promise.&lt;Array.&lt;Client&gt;&gt;</code> - An array of Client objects if found, otherwise empty array  
@@ -432,12 +476,15 @@ Retrieves traffic information for a specific client by their ID.This endpoint p
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const clients = await api.client.getTrafficById("client-id-123");
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const clients = await api.client.getTrafficById("client-id-123");
 ```
 <a name="InboundApi"></a>
 
 ## InboundApi
-API class for managing inbound connections.Inherits from BaseApi to provide inbound-specific functionality.
+API class for managing inbound connections.
+Inherits from BaseApi to provide inbound-specific functionality.
 
 **Kind**: global class  
 
@@ -452,13 +499,16 @@ API class for managing inbound connections.Inherits from BaseApi to provide inb
 <a name="InboundApi+getList"></a>
 
 ### inboundApi.getList() ⇒ <code>Promise.&lt;Array.&lt;Inbound&gt;&gt;</code>
-Retrieves a comprehensive list of all inbounds along with their associatedclient options and statistics.
+Retrieves a comprehensive list of all inbounds along with their associated
+client options and statistics.
 
 **Kind**: instance method of [<code>InboundApi</code>](#InboundApi)  
 **Returns**: <code>Promise.&lt;Array.&lt;Inbound&gt;&gt;</code> - A list of Inbound objects  
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const inbounds = await api.inbound.getList();
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const inbounds = await api.inbound.getList();
 ```
 <a name="InboundApi+add"></a>
 
@@ -474,7 +524,10 @@ Adds a new inbound connection.
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const newInbound = new Inbound({ enable: true, port: 8080, protocol: 'vmess' });await api.inbound.add(newInbound);
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const newInbound = new Inbound({ enable: true, port: 8080, protocol: 'vmess' });
+await api.inbound.add(newInbound);
 ```
 <a name="InboundApi+delete"></a>
 
@@ -490,7 +543,11 @@ Deletes an existing inbound connection by its ID.
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const existingInbound = await api.inbound.getById(1);existingInbound.port = 9090; // Change portawait api.inbound.update(existingInbound);
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const existingInbound = await api.inbound.getById(1);
+existingInbound.port = 9090; // Change port
+await api.inbound.update(existingInbound);
 ```
 <a name="InboundApi+update"></a>
 
@@ -507,18 +564,26 @@ Updates an existing inbound connection.
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const existingInbound = await api.inbound.getById(1);existingInbound.remark = "Updated Remark"; // Change remarkawait api.inbound.update(existingInbound.id, existingInbound);
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const existingInbound = await api.inbound.getById(1);
+existingInbound.remark = "Updated Remark"; // Change remark
+await api.inbound.update(existingInbound.id, existingInbound);
 ```
 <a name="InboundApi+resetStats"></a>
 
 ### inboundApi.resetStats() ⇒ <code>Promise.&lt;void&gt;</code>
-Resets the traffic statistics for all inbounds.NOTE: THIS WILL RESET ALL TRAFFIC STATS FOR ALL INBOUNDS! USE WITH CAUTION!If you need to reset stats for a specific inbound, use the `resetClientStats` method instead.
+Resets the traffic statistics for all inbounds.
+NOTE: THIS WILL RESET ALL TRAFFIC STATS FOR ALL INBOUNDS! USE WITH CAUTION!
+If you need to reset stats for a specific inbound, use the `resetClientStats` method instead.
 
 **Kind**: instance method of [<code>InboundApi</code>](#InboundApi)  
 **Returns**: <code>Promise.&lt;void&gt;</code> - Resolves when the stats are reset successfully  
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();await api.inbound.resetStats();
+const api = new Api('host', 'user', 'pass');
+await api.login();
+await api.inbound.resetStats();
 ```
 <a name="InboundApi+resetClientStats"></a>
 
@@ -534,12 +599,15 @@ Resets the traffic statistics for all clients associated with a specific inbound
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();await api.inbound.resetClientStats(1);
+const api = new Api('host', 'user', 'pass');
+await api.login();
+await api.inbound.resetClientStats(1);
 ```
 <a name="ServerApi"></a>
 
 ## ServerApi
-This class provides methods to interact with the server API, such as downloading the database.It extends the BaseApi class to inherit common API functionality.
+This class provides methods to interact with the server API, such as downloading the database.
+It extends the BaseApi class to inherit common API functionality.
 
 **Kind**: global class  
 
@@ -565,7 +633,10 @@ Saves the current database to a specified file path.
 
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const savePath = "db_backup.db";await api.getDb(savePath);
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const savePath = "db_backup.db";
+await api.getDb(savePath);
 ```
 <a name="ServerApi+getStatus"></a>
 
@@ -576,7 +647,10 @@ Retrieves the current server status.
 **Returns**: <code>Promise.&lt;(Server\|null)&gt;</code> - Resolves to a Server object containing server status, or null if not available  
 **Example**  
 ```js
-const api = new Api('host', 'user', 'pass');await api.login();const status = await api.getStatus();console.log(status);
+const api = new Api('host', 'user', 'pass');
+await api.login();
+const status = await api.getStatus();
+console.log(status);
 ```
 <a name="Client"></a>
 
@@ -644,7 +718,8 @@ Returns a readable string representation of the client.
 <a name="Client.fromJSON"></a>
 
 ### Client.fromJSON(json) ⇒ [<code>Client</code>](#Client)
-Creates a Client instance from JSON data (from API response).Handles field name mapping from API format.
+Creates a Client instance from JSON data (from API response).
+Handles field name mapping from API format.
 
 **Kind**: static method of [<code>Client</code>](#Client)  
 **Returns**: [<code>Client</code>](#Client) - A new Client instance  
@@ -696,7 +771,8 @@ Creates a new Inbound instance.
 <a name="Inbound+toJSON"></a>
 
 ### inbound.toJSON() ⇒ <code>Object</code>
-Converts the Inbound instance to JSON format for API requests.Only includes fields needed for API operations.
+Converts the Inbound instance to JSON format for API requests.
+Only includes fields needed for API operations.
 
 **Kind**: instance method of [<code>Inbound</code>](#Inbound)  
 **Returns**: <code>Object</code> - JSON representation for API  
@@ -710,7 +786,8 @@ Returns a complete representation of the inbound (for debugging/display).
 <a name="Inbound.fromJSON"></a>
 
 ### Inbound.fromJSON(json) ⇒ [<code>Inbound</code>](#Inbound)
-Creates an Inbound instance from JSON data (from API response).Handles field name mapping from API format.
+Creates an Inbound instance from JSON data (from API response).
+Handles field name mapping from API format.
 
 **Kind**: static method of [<code>Inbound</code>](#Inbound)  
 **Returns**: [<code>Inbound</code>](#Inbound) - A new Inbound instance  
@@ -835,7 +912,8 @@ Returns a readable string representation of the sniffing settings.
 <a name="Sniffing.fromJSON"></a>
 
 ### Sniffing.fromJSON(json) ⇒ [<code>Sniffing</code>](#Sniffing)
-Creates a Sniffing instance from JSON data (from API response).Handles field name mapping from API format.
+Creates a Sniffing instance from JSON data (from API response).
+Handles field name mapping from API format.
 
 **Kind**: static method of [<code>Sniffing</code>](#Sniffing)  
 **Returns**: [<code>Sniffing</code>](#Sniffing) - A new Sniffing instance  
@@ -902,7 +980,8 @@ Returns a readable string representation of the stream settings.
 <a name="StreamSettings.fromJSON"></a>
 
 ### StreamSettings.fromJSON(json) ⇒ [<code>StreamSettings</code>](#StreamSettings)
-Creates a StreamSettings instance from JSON data (from API response).Handles field name mapping from API format.
+Creates a StreamSettings instance from JSON data (from API response).
+Handles field name mapping from API format.
 
 **Kind**: static method of [<code>StreamSettings</code>](#StreamSettings)  
 **Returns**: [<code>StreamSettings</code>](#StreamSettings) - A new StreamSettings instance  

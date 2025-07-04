@@ -12,7 +12,6 @@ class BaseApi {
      * @param {string} host - The host URL
      * @param {string} username - The username for authentication
      * @param {string} password - The password for authentication
-     * @param {string|null} [token=null] - Optional authentication token
      * @param {boolean} [useTlsVerify=true] - Whether to verify TLS certificates
      * @param {string|null} [customCertificatePath=null] - Path to custom certificate
      * @param {*} [logger=null] - Optional logger instance
@@ -23,7 +22,6 @@ class BaseApi {
         host,
         username,
         password,
-        token = null,
         useTlsVerify = true,
         customCertificatePath = null,
         logger = null,
@@ -33,7 +31,6 @@ class BaseApi {
         this._host = host.replace(/\/$/, ''); // Remove trailing slash
         this._username = username;
         this._password = password;
-        this._token = token;
         this._useTlsVerify = useTlsVerify;
         this._customCertificatePath = customCertificatePath;
         this._maxRetries = 3;
@@ -209,10 +206,6 @@ class BaseApi {
         
         if (twoFactorCode !== null) {
             data.twoFactorCode = String(twoFactorCode);
-        }
-        
-        if (this._token !== null) {
-            data.loginSecret = this._token;
         }
         
         this.logger.log(`Logging in with username: ${this._username}`);
