@@ -61,6 +61,52 @@ class Api {
     async login(twoFactorCode = null) {
         await this.inbound.login(twoFactorCode);
     }
+    /**
+     * Returns the instance of the Client API if the required environment variables are set.
+     * List of required environment variables:
+     * - `XUI_HOST`: The host URL for the XUI API
+     * - `XUI_USERNAME`: The username for authentication
+     * - `XUI_PASSWORD`: The password for authentication
+     * 
+     * List of optional environment variables:
+     * - `TLS_VERIFY`: Whether to verify TLS certificates (default: true)
+     * - `TLS_CERT_PATH`: Path to a custom TLS certificate (default: null)
+     * 
+     * @param {Object} [logger=null] - Optional logger instance to use for logging
+     * @returns {ClientApi} The Client API instance
+     * @throws {Error} If the required environment variables are not set
+     * 
+     * @example
+     * 
+     * process.env.XUI_HOST = 'https://your-host.com';
+     * process.env.XUI_USERNAME = 'your-username';
+     * process.env.XUI_PASSWORD = 'your-password';
+     * 
+     * const api = Api.fromEnv();
+     * await api.login();
+     */
+    static fromEnv(logger = null) {
+        const host = process.env.XUI_HOST;
+        const username = process.env.XUI_USERNAME;
+        const password = process.env.XUI_PASSWORD;
+
+        // Check the first three required environment variables.
+        if (!host || !username || !password) {
+            throw new Error("One or more required environment variables are missing: XUI_HOST, XUI_USERNAME, XUI_PASSWORD");
+        }
+
+        const useTlsVerify = process.env.TLS_VERIFY !== 'false' && process.env.TLS_VERIFY !== '0';
+        const customCertificatePath = process.env.TLS_CERT_PATH || null;
+
+        // If logger is not provided, default to console logger.
+        if (!logger) {
+            logger = console;
+        }
+
+        return new Api(
+            host, username, password, useTlsVerify, customCertificatePath, logger
+        );
+    }
 }
 
 export default Api;
