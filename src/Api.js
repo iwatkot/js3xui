@@ -64,9 +64,9 @@ class Api {
     /**
      * Returns the instance of the Client API if the require environment variables are set.
      * List of required environment variables:
-     * - `XUI_API_HOST`: The host URL for the XUI API
-     * - `XUI_API_USERNAME`: The username for authentication
-     * - `XUI_API_PASSWORD`: The password for authentication
+     * - `XUI_HOST`: The host URL for the XUI API
+     * - `XUI_USERNAME`: The username for authentication
+     * - `XUI_PASSWORD`: The password for authentication
      * 
      * List of optional environment variables:
      * - `TLS_VERIFY`: Whether to verify TLS certificates (default: true)
